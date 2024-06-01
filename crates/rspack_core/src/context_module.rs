@@ -1,6 +1,5 @@
 use std::{
   borrow::Cow,
-  fs,
   hash::Hash,
   path::{Path, PathBuf},
   sync::Arc,
@@ -894,8 +893,9 @@ impl Module for ContextModule {
     build_context: BuildContext<'_>,
     _: Option<&Compilation>,
   ) -> Result<BuildResult> {
-    let (dependencies, blocks) =
-      self.resolve_dependencies(build_context.compiler_context.fs.clone())?;
+    let (dependencies, blocks) = self
+      .resolve_dependencies(build_context.compiler_context.fs.clone())
+      .await?;
 
     let mut hasher = RspackHash::from(&build_context.compiler_options.output);
     self.update_hash(&mut hasher);
@@ -1010,42 +1010,39 @@ static WEBPACK_CHUNK_NAME_REQUEST_PLACEHOLDER: Lazy<Regex> =
   Lazy::new(|| Regex::new(r"\[request\]").expect("regexp init failed"));
 
 impl ContextModule {
-  fn visit_dirs(
+  #[async_recursion::async_recursion]
+  async fn visit_dirs(
     ctx: &str,
     dir: &Path,
     dependencies: &mut Vec<ContextElementDependency>,
     options: &ContextModuleOptions,
-    resolve_options: &ResolveInnerOptions,
+    resolve_options: &ResolveInnerOptions<'_>,
     fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
   ) -> Result<()> {
     if !dir.is_dir() {
       return Ok(());
     }
-    for entry in fs::read_dir(dir).into_diagnostic()? {
-      let path = entry.into_diagnostic()?.path();
-      if path.is_dir() {
+    for entry in fs.read_dir(dir).await.into_diagnostic()? {
+      let mut path = entry.path.clone();
+      if entry.metadata.is_dir {
         if options.context_options.recursive {
           Self::visit_dirs(
             ctx,
-            &path,
+            &Path::new(&path),
             dependencies,
             options,
             resolve_options,
             fs.clone(),
-          )?;
+          )
+          .await?;
         }
-      } else if path
-        .file_name()
-        .map_or(false, |name| name.to_string_lossy().starts_with('.'))
-      {
+      } else if entry.path.starts_with('.') {
         // ignore hidden files
         continue;
       } else {
         // FIXME: nodejs resolver return path of context, sometimes is '/a/b', sometimes is '/a/b/'
         let relative_path = {
           let p = path
-            .to_string_lossy()
-            .to_string()
             .drain(ctx.len()..)
             .collect::<String>()
             .replace('\\', "/");
@@ -1081,7 +1078,7 @@ impl ContextModule {
             category: options.context_options.category,
             context: options.resource.clone().into(),
             options: options.context_options.clone(),
-            resource_identifier: format!("context{}|{}", &options.resource, path.to_string_lossy()),
+            resource_identifier: format!("context{}|{}", &options.resource, &path),
             referenced_exports: None,
             dependency_type: DependencyType::ContextElement(options.type_prefix),
           });
@@ -1091,7 +1088,7 @@ impl ContextModule {
     Ok(())
   }
 
-  fn resolve_dependencies(
+  async fn resolve_dependencies(
     &self,
     fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
   ) -> Result<(Vec<BoxDependency>, Vec<AsyncDependenciesBlock>)> {
@@ -1111,7 +1108,8 @@ impl ContextModule {
       &self.options,
       &resolver.options(),
       fs.clone(),
-    )?;
+    )
+    .await?;
     context_element_dependencies.sort_by_cached_key(|d| d.user_request.to_string());
 
     tracing::trace!(

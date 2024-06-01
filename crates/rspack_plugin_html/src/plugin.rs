@@ -1,6 +1,5 @@
 use std::{
   collections::hash_map::DefaultHasher,
-  fs,
   hash::{Hash, Hasher},
   path::{Path, PathBuf},
 };

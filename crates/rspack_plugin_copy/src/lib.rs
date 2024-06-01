@@ -10,7 +10,7 @@ use std::{
 
 use dashmap::DashSet;
 use derivative::Derivative;
-use futures::future::BoxFuture;
+use futures::future::{join_all, BoxFuture};
 use glob::{MatchOptions, Pattern as GlobPattern};
 use regex::Regex;
 use rspack_core::{
@@ -326,7 +326,7 @@ impl CopyRspackPlugin {
     })
   }
 
-  fn run_patter(
+  async fn run_patter(
     compilation: &Compilation,
     pattern: &CopyPattern,
     _index: usize,
@@ -366,14 +366,14 @@ impl CopyRspackPlugin {
 
     logger.debug(format!("getting stats for '{}'...", abs_from.display()));
 
-    let from_type = if let Ok(meta) = fs::metadata(&abs_from) {
-      if meta.is_dir() {
+    let from_type = if let Ok(meta) = compilation.fs.metadata(&abs_from).await {
+      if meta.is_dir {
         logger.debug(format!(
           "determined '{}' is a directory",
           abs_from.display()
         ));
         FromType::Dir
-      } else if meta.is_file() {
+      } else if meta.is_file {
         logger.debug(format!("determined '{}' is a file", abs_from.display()));
         FromType::File
       } else {
@@ -562,11 +562,8 @@ async fn process_assets(&self, compilation: &mut Compilation) -> Result<()> {
   let context_dependencies = DashSet::default();
   let diagnostics = Mutex::new(Vec::new());
 
-  let mut copied_result: Vec<(i32, RunPatternResult)> = self
-    .patterns
-    .iter()
-    .enumerate()
-    .map(|(index, pattern)| {
+  let mut copied_result: Vec<(i32, RunPatternResult)> =
+    join_all(self.patterns.iter().enumerate().map(|(index, pattern)| {
       CopyRspackPlugin::run_patter(
         compilation,
         pattern,
@@ -576,8 +573,8 @@ async fn process_assets(&self, compilation: &mut Compilation) -> Result<()> {
         &diagnostics,
         &logger,
       )
-    })
-    .collect::<Vec<_>>()
+    }))
+    .await
     .into_iter()
     .flatten()
     .flat_map(|item| {
