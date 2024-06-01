@@ -1,12 +1,14 @@
+use std::path::Path;
+
 use futures::future::BoxFuture;
-use rspack_fs::r#async::AsyncWritableFileSystem;
+use rspack_fs::{r#async::AsyncWritableFileSystem, AsyncReadableFileSystem};
 
-use crate::node::ThreadsafeNodeFS;
+use crate::node::{ThreadsafeInputNodeFS, ThreadsafeOutputNodeFS};
 
-pub struct AsyncNodeWritableFileSystem(ThreadsafeNodeFS);
+pub struct AsyncNodeWritableFileSystem(ThreadsafeOutputNodeFS);
 
 impl AsyncNodeWritableFileSystem {
-  pub fn new(tsfs: ThreadsafeNodeFS) -> napi::Result<Self> {
+  pub fn new(tsfs: ThreadsafeOutputNodeFS) -> napi::Result<Self> {
     Ok(Self(tsfs))
   }
 }
@@ -111,6 +113,44 @@ impl AsyncWritableFileSystem for AsyncNodeWritableFileSystem {
           ))
         })
         .map(|_| ())
+    };
+    Box::pin(fut)
+  }
+}
+
+pub struct AsyncNodeReadableFileSystem(ThreadsafeInputNodeFS);
+
+impl AsyncNodeReadableFileSystem {
+  pub fn new(tsfs: ThreadsafeInputNodeFS) -> napi::Result<Self> {
+    Ok(Self(tsfs))
+  }
+}
+
+impl std::fmt::Debug for AsyncNodeReadableFileSystem {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    f.debug_struct("AsyncNodeReadableFileSystem").finish()
+  }
+}
+
+impl AsyncReadableFileSystem for AsyncNodeReadableFileSystem {
+  fn read(&self, file: &Path) -> BoxFuture<'_, rspack_fs::Result<Vec<u8>>> {
+    let file = file.to_string_lossy().to_string();
+    let fut = async move {
+      self
+        .0
+        .read_file
+        .call(file)
+        .await
+        .map_err(|e| {
+          rspack_fs::Error::Io(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            e.to_string(),
+          ))
+        })
+        .map(|either| match either {
+          napi::Either::A(s) => s.into_bytes(),
+          napi::Either::B(b) => b.into(),
+        })
     };
     Box::pin(fut)
   }

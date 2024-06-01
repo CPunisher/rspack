@@ -84,6 +84,7 @@ impl Task<MakeTaskContext> for AddTask {
     tracing::trace!("Module added: {}", self.module.identifier());
 
     Ok(vec![Box::new(BuildTask {
+      fs: context.fs.clone(),
       module: self.module,
       current_profile: self.current_profile,
       resolver_factory: context.resolver_factory.clone(),

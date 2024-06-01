@@ -240,7 +240,7 @@ impl CopyRspackPlugin {
     logger.debug(format!("reading '{}'...", absolute_filename.display()));
     // TODO inputFileSystem
 
-    let mut source = match tokio::fs::read(absolute_filename.clone()).await {
+    let mut source = match compilation.fs.read(&absolute_filename).await {
       Ok(data) => {
         logger.debug(format!("read '{}'...", absolute_filename.display()));
 

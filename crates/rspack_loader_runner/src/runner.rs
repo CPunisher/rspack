@@ -8,6 +8,7 @@ use anymap::CloneAny;
 use derivative::Derivative;
 use once_cell::sync::OnceCell;
 use rspack_error::{error, Diagnostic, IntoTWithDiagnosticArray, Result, TWithDiagnosticArray};
+use rspack_fs::AsyncReadableFileSystem;
 use rspack_sources::SourceMap;
 use rustc_hash::FxHashSet as HashSet;
 
@@ -185,6 +186,7 @@ pub struct LoaderContext<'c, C> {
   /// It will be `None` at pitching stage.
   pub content: Option<Content>,
 
+  pub fs: Arc<dyn AsyncReadableFileSystem>,
   pub context: C,
   pub source_map: Option<SourceMap>,
   pub additional_data: AdditionalData,
@@ -286,7 +288,9 @@ async fn process_resource<C: Send>(loader_context: &mut LoaderContext<'_, C>) ->
   let resource_data = &loader_context.__resource_data;
   if loader_context.content.is_none() {
     if !resource_data.resource_path.to_string_lossy().is_empty() {
-      let result = tokio::fs::read(&loader_context.__resource_data.resource_path)
+      let result = loader_context
+        .fs
+        .read(&loader_context.__resource_data.resource_path)
         .await
         .map_err(|e| {
           let r = loader_context
@@ -331,6 +335,7 @@ async fn create_loader_context<'c, C: 'c>(
   plugins: &'c [&dyn LoaderRunnerPlugin<Context = C>],
   context: C,
   additional_data: AdditionalData,
+  fs: Arc<dyn AsyncReadableFileSystem>,
 ) -> Result<LoaderContext<'c, C>> {
   let mut file_dependencies: HashSet<PathBuf> = Default::default();
   if resource_data.resource_path.is_absolute() {
@@ -347,6 +352,7 @@ async fn create_loader_context<'c, C: 'c>(
     asset_filenames: Default::default(),
     content: None,
     context,
+    fs,
     source_map: None,
     additional_data,
     __loader_index: 0,
@@ -475,6 +481,7 @@ pub async fn run_loaders<C: 'static + Send>(
   plugins: &[&dyn LoaderRunnerPlugin<Context = C>],
   context: C,
   additional_data: AdditionalData,
+  fs: Arc<dyn AsyncReadableFileSystem>,
 ) -> Result<TWithDiagnosticArray<LoaderResult>> {
   let loaders = loaders
     .iter()
@@ -487,6 +494,7 @@ pub async fn run_loaders<C: 'static + Send>(
     plugins,
     context,
     additional_data,
+    fs,
   )
   .await?;
 
@@ -503,6 +511,7 @@ mod test {
 
   use once_cell::sync::OnceCell;
   use rspack_error::Result;
+  use rspack_fs::AsyncNativeFileSystem;
   use rspack_identifier::{Identifiable, Identifier};
 
   use super::{run_loaders, Loader, LoaderContext, ResourceData};
@@ -601,6 +610,7 @@ mod test {
       &[&TestContentPlugin],
       (),
       Default::default(),
+      Arc::new(AsyncNativeFileSystem),
     )
     .await
     .unwrap();
@@ -780,6 +790,7 @@ mod test {
       &[&TestContentPlugin],
       (),
       Default::default(),
+      Arc::new(AsyncNativeFileSystem),
     )
     .await
     .unwrap();
@@ -796,6 +807,7 @@ mod test {
       &[&TestContentPlugin],
       (),
       Default::default(),
+      Arc::new(AsyncNativeFileSystem),
     )
     .await
     .unwrap();
@@ -867,6 +879,7 @@ mod test {
       &[&TestContentPlugin],
       (),
       Default::default(),
+      Arc::new(AsyncNativeFileSystem),
     )
     .await
     .unwrap();

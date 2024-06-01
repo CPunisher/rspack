@@ -405,12 +405,14 @@ impl Module for NormalModule {
       additional_data.insert(&LoadersShouldAlwaysGiveContent {});
     }
 
+    let fs = build_context.compiler_context.fs.clone();
     let loader_result = run_loaders(
       &self.loaders,
       &mut self.resource_data,
       &[&plugin],
       build_context.compiler_context,
       additional_data,
+      fs,
     )
     .await;
     let (mut loader_result, ds) = match loader_result {

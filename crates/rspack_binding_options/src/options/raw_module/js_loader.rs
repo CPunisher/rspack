@@ -1,8 +1,9 @@
-use std::{ops::Deref, path::PathBuf, str::FromStr};
+use std::{ops::Deref, path::PathBuf, str::FromStr, sync::Arc};
 
 use napi_derive::napi;
 use rspack_core::{rspack_sources::SourceMap, Content, ResourceData};
 use rspack_error::Diagnostic;
+use rspack_fs_node::{AsyncNodeReadableFileSystem, ThreadsafeInputNodeFS};
 use rspack_loader_runner::AdditionalData;
 use rustc_hash::FxHashSet as HashSet;
 use {
@@ -263,6 +264,7 @@ pub async fn run_builtin_loader(
   builtin: String,
   options: Option<&str>,
   loader_context: JsLoaderContext,
+  fs: ThreadsafeInputNodeFS,
 ) -> Result<JsLoaderContext> {
   use rspack_loader_runner::__private::loader::LoaderItemList;
 
@@ -290,6 +292,10 @@ pub async fn run_builtin_loader(
       Either::A(_) => None,
       Either::B(c) => Some(Content::from(c.as_ref().to_owned())),
     },
+    fs: Arc::new(
+      AsyncNodeReadableFileSystem::new(fs)
+        .map_err(|e| Error::from_reason(format!("Failed to create readable filesystem: {e}",)))?,
+    ),
     context: loader_context.context_external.clone(),
     source_map: loader_context
       .source_map

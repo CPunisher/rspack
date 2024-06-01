@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use rspack_error::Result;
-use rspack_fs::AsyncWritableFileSystem;
+use rspack_fs::{AsyncReadableFileSystem, AsyncWritableFileSystem};
 use rspack_hash::RspackHashDigest;
 use rspack_identifier::{Identifier, IdentifierMap};
 use rspack_sources::Source;
@@ -12,9 +12,10 @@ use crate::{
   fast_set, get_chunk_from_ukey, ChunkKind, Compilation, Compiler, ModuleExecutor, RuntimeSpec,
 };
 
-impl<T> Compiler<T>
+impl<T, U> Compiler<T, U>
 where
   T: AsyncWritableFileSystem + Send + Sync,
+  U: AsyncReadableFileSystem + Send + Sync,
 {
   pub async fn rebuild(
     &mut self,
@@ -77,6 +78,7 @@ where
         Some(ModuleExecutor::default()),
         modified_files,
         removed_files,
+        self.input_filesystem.clone(),
       );
 
       if let Some(state) = self.options.get_incremental_rebuild_make_state() {

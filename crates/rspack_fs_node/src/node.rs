@@ -59,8 +59,8 @@ cfg_async! {
   use napi::Either;
   use rspack_napi::threadsafe_function::ThreadsafeFunction;
 
-  #[napi(object, object_to_js = false, js_name = "ThreadsafeNodeFS")]
-  pub struct ThreadsafeNodeFS {
+  #[napi(object, object_to_js = false, js_name = "ThreadsafeOutputNodeFS")]
+  pub struct ThreadsafeOutputNodeFS {
     #[napi(ts_type = "(name: string, content: Buffer) => Promise<void> | void")]
     pub write_file: ThreadsafeFunction<(String, Buffer), ()>,
     #[napi(ts_type = "(name: string) => Promise<void> | void")]
@@ -71,5 +71,15 @@ cfg_async! {
     pub mkdirp: ThreadsafeFunction<String, Either<String, ()>>,
     #[napi(ts_type = "(name: string) => Promise<string | void> | string | void")]
     pub remove_dir_all: ThreadsafeFunction<String, Either<String, ()>>,
+  }
+
+  #[napi(object, object_to_js = false, js_name = "ThreadsafeInputNodeFS")]
+  pub struct ThreadsafeInputNodeFS {
+    #[napi(ts_type = "(name: string) => Promise<string | Buffer> | string | Buffer")]
+    pub read_file: ThreadsafeFunction<String, Either<String, Buffer>>,
+  }
+
+  #[napi(object, object_to_js = false, js_name = "Dirent")]
+  pub struct Dirent {
   }
 }

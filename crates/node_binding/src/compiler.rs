@@ -7,9 +7,10 @@ use std::{
   },
 };
 
-use rspack_fs_node::AsyncNodeWritableFileSystem;
+use rspack_fs_node::{AsyncNodeReadableFileSystem, AsyncNodeWritableFileSystem};
 
-type CompilerInner = rspack_core::Compiler<AsyncNodeWritableFileSystem>;
+type CompilerInner =
+  rspack_core::Compiler<AsyncNodeWritableFileSystem, AsyncNodeReadableFileSystem>;
 
 /// `Compiler` struct that is `!Unpin`.
 pub(crate) struct Compiler(CompilerInner, PhantomPinned);

@@ -1,6 +1,7 @@
 use std::{collections::VecDeque, sync::Arc};
 
 use rspack_error::{Diagnostic, IntoTWithDiagnosticArray};
+use rspack_fs::AsyncReadableFileSystem;
 
 use super::{process_dependencies::ProcessDependenciesTask, MakeTaskContext};
 use crate::{
@@ -11,6 +12,7 @@ use crate::{
 
 #[derive(Debug)]
 pub struct BuildTask {
+  pub fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
   pub module: Box<dyn Module>,
   pub current_profile: Option<Box<ModuleProfile>>,
   pub resolver_factory: Arc<ResolverFactory>,
@@ -25,6 +27,7 @@ impl Task<MakeTaskContext> for BuildTask {
   }
   async fn async_run(self: Box<Self>) -> TaskResult<MakeTaskContext> {
     let Self {
+      fs,
       compiler_options,
       resolver_factory,
       plugin_driver,
@@ -45,6 +48,7 @@ impl Task<MakeTaskContext> for BuildTask {
       .build(
         BuildContext {
           compiler_context: CompilerContext {
+            fs,
             options: compiler_options.clone(),
             resolver_factory: resolver_factory.clone(),
             module: module.identifier(),

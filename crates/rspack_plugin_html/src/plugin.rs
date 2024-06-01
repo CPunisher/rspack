@@ -54,7 +54,10 @@ async fn process_assets(&self, compilation: &mut Compilation) -> Result<()> {
       AsRef::<Path>::as_ref(&compilation.options.context).join(template.as_str()),
     );
 
-    let content = fs::read_to_string(&resolved_template)
+    let content = compilation
+      .fs
+      .read_to_string(&resolved_template)
+      .await
       .context(format!(
         "failed to read `{}` from `{}`",
         resolved_template.display(),
@@ -191,7 +194,10 @@ async fn process_assets(&self, compilation: &mut Compilation) -> Result<()> {
       .to_string();
 
     let resolved_favicon = AsRef::<Path>::as_ref(&compilation.options.context).join(url.path());
-    let content = fs::read(resolved_favicon)
+    let content = compilation
+      .fs
+      .read(&resolved_favicon)
+      .await
       .context(format!(
         "failed to read `{}` from `{}`",
         url.path(),

@@ -13,7 +13,10 @@ use napi::bindgen_prelude::*;
 use rspack_binding_options::BuiltinPlugin;
 use rspack_core::PluginExt;
 use rspack_error::Diagnostic;
-use rspack_fs_node::{AsyncNodeWritableFileSystem, ThreadsafeNodeFS};
+use rspack_fs_node::{
+  AsyncNodeReadableFileSystem, AsyncNodeWritableFileSystem, ThreadsafeInputNodeFS,
+  ThreadsafeOutputNodeFS,
+};
 
 mod compiler;
 mod loader;
@@ -41,7 +44,8 @@ impl Rspack {
     options: RawOptions,
     builtin_plugins: Vec<BuiltinPlugin>,
     register_js_taps: RegisterJsTaps,
-    output_filesystem: ThreadsafeNodeFS,
+    output_filesystem: ThreadsafeOutputNodeFS,
+    input_filesystem: ThreadsafeInputNodeFS,
   ) -> Result<Self> {
     tracing::info!("raw_options: {:#?}", &options);
 
@@ -64,6 +68,8 @@ impl Rspack {
       plugins,
       AsyncNodeWritableFileSystem::new(output_filesystem)
         .map_err(|e| Error::from_reason(format!("Failed to create writable filesystem: {e}",)))?,
+      AsyncNodeReadableFileSystem::new(input_filesystem)
+        .map_err(|e| Error::from_reason(format!("Failed to create readable filesystem: {e}",)))?,
     );
 
     Ok(Self {

@@ -4,7 +4,7 @@ use rspack_fs::cfg_async;
 
 cfg_async! {
   mod r#async;
-  pub use r#async::AsyncNodeWritableFileSystem;
+  pub use r#async::{AsyncNodeWritableFileSystem, AsyncNodeReadableFileSystem};
 }
 mod sync;
 pub use sync::NodeWritableFileSystem;
@@ -13,7 +13,8 @@ mod node;
 pub use node::NodeFS;
 
 cfg_async! {
-  pub use node::ThreadsafeNodeFS;
+  pub use node::ThreadsafeOutputNodeFS;
+  pub use node::ThreadsafeInputNodeFS;
 }
 
 #[cfg(node)]
@@ -64,7 +65,7 @@ mod node_test {
   #[napi]
   impl TestThreadsafeFS {
     #[napi(constructor)]
-    pub fn new(env: Env, fs: ThreadsafeNodeFS) -> Self {
+    pub fn new(env: Env, fs: ThreadsafeOutputNodeFS) -> Self {
       Self {
         writable_fs: AsyncNodeWritableFileSystem::new(fs).unwrap(),
       }

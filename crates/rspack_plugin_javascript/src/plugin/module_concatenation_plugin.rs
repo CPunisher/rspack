@@ -908,6 +908,7 @@ impl ModuleConcatenationPlugin {
         .build(
           rspack_core::BuildContext {
             compiler_context: CompilerContext {
+              fs: compilation.fs.clone(),
               options: compilation.options.clone(),
               resolver_factory: compilation.resolver_factory.clone(),
               module: new_module.id(),

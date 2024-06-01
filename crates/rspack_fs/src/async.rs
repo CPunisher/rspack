@@ -31,11 +31,28 @@ pub trait AsyncWritableFileSystem {
   fn remove_dir_all<P: AsRef<Path>>(&self, dir: P) -> BoxFuture<'_, Result<()>>;
 }
 
-pub trait AsyncReadableFileSystem {
+pub struct DirEntry {
+  pub path: String,
+}
+
+pub trait AsyncReadableFileSystem: Send + Sync + std::fmt::Debug {
   /// Read the entire contents of a file into a bytes vector.
   ///
   /// Error: This function will return an error if path does not already exist.
-  fn read<P: AsRef<Path>>(&self, file: P) -> BoxFuture<'_, Result<Vec<u8>>>;
+  fn read(&self, file: &Path) -> BoxFuture<'_, Result<Vec<u8>>>;
+
+  // fn read_dir(&self, file: &Path) -> BoxFuture<'_, Result<Vec<>>
+
+  fn read_to_string(&self, file: &Path) -> BoxFuture<'_, Result<String>> {
+    let file = file.to_owned();
+    let fut = async move {
+      self
+        .read(&file)
+        .await
+        .map(|bytes| String::from_utf8_lossy(&bytes).to_string())
+    };
+    Box::pin(fut)
+  }
 }
 
 /// Async readable and writable file system representation.

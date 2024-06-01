@@ -12,6 +12,7 @@ use itertools::Itertools;
 use once_cell::sync::Lazy;
 use regex::{Captures, Regex};
 use rspack_error::{impl_empty_diagnosable_trait, miette::IntoDiagnostic, Diagnostic, Result};
+use rspack_fs::AsyncReadableFileSystem;
 use rspack_hash::RspackHash;
 use rspack_identifier::{Identifiable, Identifier};
 use rspack_macros::impl_source_map_config;
@@ -893,7 +894,8 @@ impl Module for ContextModule {
     build_context: BuildContext<'_>,
     _: Option<&Compilation>,
   ) -> Result<BuildResult> {
-    let (dependencies, blocks) = self.resolve_dependencies()?;
+    let (dependencies, blocks) =
+      self.resolve_dependencies(build_context.compiler_context.fs.clone())?;
 
     let mut hasher = RspackHash::from(&build_context.compiler_options.output);
     self.update_hash(&mut hasher);
@@ -1014,6 +1016,7 @@ impl ContextModule {
     dependencies: &mut Vec<ContextElementDependency>,
     options: &ContextModuleOptions,
     resolve_options: &ResolveInnerOptions,
+    fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
   ) -> Result<()> {
     if !dir.is_dir() {
       return Ok(());
@@ -1022,7 +1025,14 @@ impl ContextModule {
       let path = entry.into_diagnostic()?.path();
       if path.is_dir() {
         if options.context_options.recursive {
-          Self::visit_dirs(ctx, &path, dependencies, options, resolve_options)?;
+          Self::visit_dirs(
+            ctx,
+            &path,
+            dependencies,
+            options,
+            resolve_options,
+            fs.clone(),
+          )?;
         }
       } else if path
         .file_name()
@@ -1081,7 +1091,10 @@ impl ContextModule {
     Ok(())
   }
 
-  fn resolve_dependencies(&self) -> Result<(Vec<BoxDependency>, Vec<AsyncDependenciesBlock>)> {
+  fn resolve_dependencies(
+    &self,
+    fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+  ) -> Result<(Vec<BoxDependency>, Vec<AsyncDependenciesBlock>)> {
     tracing::trace!("resolving context module path {}", self.options.resource);
 
     let resolver = &self.resolve_factory.get(ResolveOptionsWithDependencyType {
@@ -1097,6 +1110,7 @@ impl ContextModule {
       &mut context_element_dependencies,
       &self.options,
       &resolver.options(),
+      fs.clone(),
     )?;
     context_element_dependencies.sort_by_cached_key(|d| d.user_request.to_string());
 

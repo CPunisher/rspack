@@ -4,10 +4,12 @@ use std::{
   sync::Arc,
 };
 
+use oxc_resolver::FileSystem;
 use rspack_error::{
   miette::{diagnostic, Diagnostic},
   DiagnosticExt, Severity, TraceableError,
 };
+use rspack_fs::AsyncReadableFileSystem;
 use rspack_loader_runner::DescriptionData;
 use rustc_hash::FxHashSet as HashSet;
 
@@ -72,22 +74,47 @@ impl<'a> ResolveInnerOptions<'a> {
   }
 }
 
+pub struct RspackFileSystem(Arc<dyn AsyncReadableFileSystem + Send + Sync>);
+
+impl FileSystem for RspackFileSystem {
+  fn read_to_string(&self, path: &Path) -> std::io::Result<String> {
+    todo!()
+  }
+
+  fn metadata(&self, path: &Path) -> std::io::Result<oxc_resolver::FileMetadata> {
+    todo!()
+  }
+
+  fn symlink_metadata(&self, path: &Path) -> std::io::Result<oxc_resolver::FileMetadata> {
+    todo!()
+  }
+
+  fn canonicalize(&self, path: &Path) -> std::io::Result<PathBuf> {
+    todo!()
+  }
+}
+
 /// Proxy to [oxc_resolver::Resolver]
 ///
 /// Internal caches are shared.
+pub type RspackOxcResolver = oxc_resolver::ResolverGeneric<RspackFileSystem>;
+
 #[derive(Debug)]
 pub enum Resolver {
-  OxcResolver(oxc_resolver::Resolver),
+  OxcResolver(RspackOxcResolver),
 }
 
 impl Resolver {
-  pub fn new(options: Resolve) -> Self {
-    Self::new_oxc_resolver(options)
+  pub fn new(fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>, options: Resolve) -> Self {
+    Self::new_oxc_resolver(fs, options)
   }
 
-  fn new_oxc_resolver(options: Resolve) -> Self {
+  fn new_oxc_resolver(
+    fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+    options: Resolve,
+  ) -> Self {
     let options = to_oxc_resolver_options(options, false, DependencyCategory::Unknown);
-    let resolver = oxc_resolver::Resolver::new(options);
+    let resolver = RspackOxcResolver::new_with_file_system(RspackFileSystem(fs.clone()), options);
     Self::OxcResolver(resolver)
   }
 

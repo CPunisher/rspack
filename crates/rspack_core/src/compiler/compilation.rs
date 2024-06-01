@@ -11,6 +11,7 @@ use indexmap::{IndexMap, IndexSet};
 use itertools::Itertools;
 use rayon::prelude::*;
 use rspack_error::{error, Diagnostic, Result, Severity};
+use rspack_fs::AsyncReadableFileSystem;
 use rspack_futures::FuturesResults;
 use rspack_hash::{RspackHash, RspackHashDigest};
 use rspack_hook::define_hook;
@@ -131,6 +132,7 @@ pub struct Compilation {
   // The status is different, should generate different hash for `.hot-update.js`
   // So use compilation hash update `hot_index` to fix it.
   pub hot_index: u32,
+  pub fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
   pub records: Option<CompilationRecords>,
   pub options: Arc<CompilerOptions>,
   pub entries: Entry,
@@ -207,10 +209,12 @@ impl Compilation {
     module_executor: Option<ModuleExecutor>,
     modified_files: HashSet<PathBuf>,
     removed_files: HashSet<PathBuf>,
+    fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
   ) -> Self {
     Self {
       id: CompilationId::new(),
       hot_index: 0,
+      fs,
       records,
       options,
       other_module_graph: None,

@@ -6,6 +6,7 @@ pub mod process_dependencies;
 use std::sync::Arc;
 
 use rspack_error::Result;
+use rspack_fs::AsyncReadableFileSystem;
 use rustc_hash::{FxHashMap as HashMap, FxHashSet as HashSet};
 
 use super::MakeArtifact;
@@ -19,6 +20,7 @@ use crate::{
 
 pub struct MakeTaskContext {
   // compilation info
+  pub fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
   pub plugin_driver: SharedPluginDriver,
   pub compiler_options: Arc<CompilerOptions>,
   pub resolver_factory: Arc<ResolverFactory>,
@@ -32,6 +34,7 @@ pub struct MakeTaskContext {
 impl MakeTaskContext {
   pub fn new(compilation: &Compilation, artifact: MakeArtifact) -> Self {
     Self {
+      fs: compilation.fs.clone(),
       plugin_driver: compilation.plugin_driver.clone(),
       compiler_options: compilation.options.clone(),
       resolver_factory: compilation.resolver_factory.clone(),
@@ -64,6 +67,7 @@ impl MakeTaskContext {
       None,
       Default::default(),
       Default::default(),
+      self.fs.clone(),
     );
     compilation.dependency_factories = self.dependency_factories.clone();
     compilation.swap_make_artifact(&mut self.artifact);

@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use rspack_fs::AsyncReadableFileSystem;
 pub use rspack_loader_runner::{run_loaders, Content, Loader, LoaderContext};
 use rspack_util::source_map::SourceMapKind;
 
@@ -7,6 +8,7 @@ use crate::{CompilerOptions, Context, ModuleIdentifier, ResolverFactory, SharedP
 
 #[derive(Debug, Clone)]
 pub struct CompilerContext {
+  pub fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
   pub options: Arc<CompilerOptions>,
   pub resolver_factory: Arc<ResolverFactory>,
   pub module: ModuleIdentifier,             // current module

@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use rspack_error::Result;
-use rspack_fs::AsyncWritableFileSystem;
+use rspack_fs::{AsyncReadableFileSystem, AsyncWritableFileSystem};
 use rspack_futures::FuturesResults;
 use rspack_hook::define_hook;
 use rspack_sources::BoxSource;
@@ -49,12 +49,14 @@ pub struct CompilerHooks {
 }
 
 #[derive(Debug)]
-pub struct Compiler<T>
+pub struct Compiler<T, U>
 where
   T: AsyncWritableFileSystem + Send + Sync,
+  U: AsyncReadableFileSystem + Send + Sync + 'static,
 {
   pub options: Arc<CompilerOptions>,
   pub output_filesystem: T,
+  pub input_filesystem: Arc<U>,
   pub compilation: Compilation,
   pub plugin_driver: SharedPluginDriver,
   pub resolver_factory: Arc<ResolverFactory>,
@@ -65,20 +67,33 @@ where
   pub emitted_asset_versions: HashMap<String, String>,
 }
 
-impl<T> Compiler<T>
+impl<T, U> Compiler<T, U>
 where
   T: AsyncWritableFileSystem + Send + Sync,
+  U: AsyncReadableFileSystem + Send + Sync + 'static,
 {
   #[instrument(skip_all)]
-  pub fn new(options: CompilerOptions, plugins: Vec<BoxPlugin>, output_filesystem: T) -> Self {
+  pub fn new(
+    options: CompilerOptions,
+    plugins: Vec<BoxPlugin>,
+    output_filesystem: T,
+    input_filesystem: U,
+  ) -> Self {
     #[cfg(debug_assertions)]
     {
       if let Ok(mut debug_info) = crate::debug_info::DEBUG_INFO.lock() {
         debug_info.with_context(options.context.to_string());
       }
     }
-    let resolver_factory = Arc::new(ResolverFactory::new(options.resolve.clone()));
-    let loader_resolver_factory = Arc::new(ResolverFactory::new(options.resolve_loader.clone()));
+    let input_filesystem = Arc::new(input_filesystem);
+    let resolver_factory = Arc::new(ResolverFactory::new(
+      input_filesystem.clone(),
+      options.resolve.clone(),
+    ));
+    let loader_resolver_factory = Arc::new(ResolverFactory::new(
+      input_filesystem.clone(),
+      options.resolve_loader.clone(),
+    ));
     let (plugin_driver, options) = PluginDriver::new(options, plugins, resolver_factory.clone());
     let old_cache = Arc::new(OldCache::new(options.clone()));
     let module_executor = ModuleExecutor::default();
@@ -94,8 +109,10 @@ where
         Some(module_executor),
         Default::default(),
         Default::default(),
+        input_filesystem.clone(),
       ),
       output_filesystem,
+      input_filesystem,
       plugin_driver,
       resolver_factory,
       loader_resolver_factory,
@@ -129,6 +146,7 @@ where
         Some(module_executor),
         Default::default(),
         Default::default(),
+        self.input_filesystem.clone(),
       ),
     );
 

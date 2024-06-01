@@ -11,7 +11,7 @@ use rspack_error::{
 #[error("Rspack FS Error: {0}")]
 struct FsError(#[source] std::io::Error);
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum Error {
   /// Generic I/O error
   Io(std::io::Error),

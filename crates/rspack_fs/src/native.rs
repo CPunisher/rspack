@@ -32,6 +32,7 @@ cfg_async! {
   use futures::future::BoxFuture;
 
   use crate::{AsyncReadableFileSystem, AsyncWritableFileSystem};
+  #[derive(Debug)]
   pub struct AsyncNativeFileSystem;
 
   impl AsyncWritableFileSystem for AsyncNativeFileSystem {
@@ -72,8 +73,8 @@ cfg_async! {
   }
 
   impl AsyncReadableFileSystem for AsyncNativeFileSystem {
-    fn read<P: AsRef<Path>>(&self, file: P) -> BoxFuture<'_, Result<Vec<u8>>> {
-      let file = file.as_ref().to_string_lossy().to_string();
+    fn read(&self, file: &Path) -> BoxFuture<'_, Result<Vec<u8>>> {
+      let file = file.to_string_lossy().to_string();
       let fut = async move { tokio::fs::read(file).await.map_err(Error::from) };
       Box::pin(fut)
     }
