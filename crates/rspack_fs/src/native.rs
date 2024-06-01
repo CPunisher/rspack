@@ -5,6 +5,7 @@ use super::{
   sync::{ReadableFileSystem, WritableFileSystem},
   Error, Result,
 };
+use crate::r#async::{DirEntry, Metadata};
 
 pub struct NativeFileSystem;
 
@@ -76,6 +77,41 @@ cfg_async! {
     fn read(&self, file: &Path) -> BoxFuture<'_, Result<Vec<u8>>> {
       let file = file.to_string_lossy().to_string();
       let fut = async move { tokio::fs::read(file).await.map_err(Error::from) };
+      Box::pin(fut)
+    }
+
+    fn read_dir(&self, file: &Path) -> BoxFuture<'_, Result<Vec<DirEntry>>> {
+      let file = file.to_string_lossy().to_string();
+      let fut = async move {
+        let mut dir = tokio::fs::read_dir(file).await?;
+        let mut dir_entries = Vec::new();
+        while let Some(entry) = dir.next_entry().await? {
+            let path = entry.path().to_string_lossy().to_string();
+            let metadata = entry.metadata().await?;
+            dir_entries.push(DirEntry {
+                path,
+                metadata: Metadata {
+                    is_dir: metadata.is_dir(),
+                    is_file: metadata.is_file(),
+                },
+            });
+        }
+        Ok(dir_entries)
+      };
+      Box::pin(fut)
+    }
+
+    fn metadata(&self, file: &Path) -> BoxFuture<'_, Result<Metadata>> {
+      let file = file.to_string_lossy().to_string();
+      let fut = async move {
+        tokio::fs::metadata(file)
+          .await
+          .map_err(Error::from)
+          .map(|metadata| Metadata {
+            is_dir: metadata.is_dir(),
+            is_file: metadata.is_file(),
+          })
+      };
       Box::pin(fut)
     }
   }

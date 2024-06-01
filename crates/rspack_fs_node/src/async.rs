@@ -154,4 +154,62 @@ impl AsyncReadableFileSystem for AsyncNodeReadableFileSystem {
     };
     Box::pin(fut)
   }
+
+  fn read_dir(
+    &self,
+    file: &Path,
+  ) -> BoxFuture<'_, rspack_fs::Result<Vec<rspack_fs::r#async::DirEntry>>> {
+    let file = file.to_string_lossy().to_string();
+    let fut = async move {
+      self
+        .0
+        .read_dir
+        .call(file)
+        .await
+        .map_err(|e| {
+          rspack_fs::Error::Io(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            e.to_string(),
+          ))
+        })
+        .map(|entries| {
+          entries
+            .into_iter()
+            .map(|entry| rspack_fs::r#async::DirEntry {
+              path: entry.path,
+              metadata: rspack_fs::r#async::Metadata {
+                is_dir: entry.metadata.is_dir,
+                is_file: entry.metadata.is_file,
+              },
+            })
+            .collect()
+        })
+    };
+    Box::pin(fut)
+  }
+
+  fn metadata(
+    &self,
+    file: &Path,
+  ) -> BoxFuture<'_, rspack_fs::Result<rspack_fs::r#async::Metadata>> {
+    let file = file.to_string_lossy().to_string();
+    let fut = async move {
+      self
+        .0
+        .metadata
+        .call(file)
+        .await
+        .map_err(|e| {
+          rspack_fs::Error::Io(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            e.to_string(),
+          ))
+        })
+        .map(|metadata| rspack_fs::r#async::Metadata {
+          is_dir: metadata.is_dir,
+          is_file: metadata.is_file,
+        })
+    };
+    Box::pin(fut)
+  }
 }

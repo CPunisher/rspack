@@ -77,9 +77,21 @@ cfg_async! {
   pub struct ThreadsafeInputNodeFS {
     #[napi(ts_type = "(name: string) => Promise<string | Buffer> | string | Buffer")]
     pub read_file: ThreadsafeFunction<String, Either<String, Buffer>>,
+    #[napi(ts_type = "(name: string) => Promise<JsDirent[]> | JsDirent[]")]
+    pub read_dir: ThreadsafeFunction<String, Vec<JsDirent>>,
+    #[napi(ts_type = "(name: string) => Promise<Metadata> | Metadata")]
+    pub metadata: ThreadsafeFunction<String, JsMetadata>,
   }
 
-  #[napi(object, object_to_js = false, js_name = "Dirent")]
-  pub struct Dirent {
+  #[napi(object, object_to_js = false, js_name = "JsDirent")]
+  pub struct JsDirent {
+    pub path: String,
+    pub metadata: JsMetadata,
+  }
+
+  #[napi(object, object_to_js = false, js_name = "JsMetadata")]
+  pub struct JsMetadata {
+    pub is_dir: bool,
+    pub is_file: bool,
   }
 }

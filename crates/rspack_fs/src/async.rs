@@ -31,8 +31,14 @@ pub trait AsyncWritableFileSystem {
   fn remove_dir_all<P: AsRef<Path>>(&self, dir: P) -> BoxFuture<'_, Result<()>>;
 }
 
+pub struct Metadata {
+  pub is_dir: bool,
+  pub is_file: bool,
+}
+
 pub struct DirEntry {
   pub path: String,
+  pub metadata: Metadata,
 }
 
 pub trait AsyncReadableFileSystem: Send + Sync + std::fmt::Debug {
@@ -41,7 +47,9 @@ pub trait AsyncReadableFileSystem: Send + Sync + std::fmt::Debug {
   /// Error: This function will return an error if path does not already exist.
   fn read(&self, file: &Path) -> BoxFuture<'_, Result<Vec<u8>>>;
 
-  // fn read_dir(&self, file: &Path) -> BoxFuture<'_, Result<Vec<>>
+  fn read_dir(&self, file: &Path) -> BoxFuture<'_, Result<Vec<DirEntry>>>;
+
+  fn metadata(&self, file: &Path) -> BoxFuture<'_, Result<Metadata>>;
 
   fn read_to_string(&self, file: &Path) -> BoxFuture<'_, Result<String>> {
     let file = file.to_owned();
