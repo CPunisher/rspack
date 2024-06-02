@@ -79,34 +79,42 @@ pub struct RspackFileSystem(Arc<dyn AsyncReadableFileSystem + Send + Sync>);
 
 impl FileSystem for RspackFileSystem {
   fn read_to_string(&self, path: &Path) -> std::io::Result<String> {
-    Handle::current()
-      .block_on(self.0.read_to_string(path))
-      .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
+    tokio::task::block_in_place(|| {
+      Handle::current()
+        .block_on(self.0.read_to_string(path))
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
+    })
   }
 
   fn metadata(&self, path: &Path) -> std::io::Result<oxc_resolver::FileMetadata> {
-    Handle::current()
-      .block_on(self.0.metadata(path))
-      .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
-      .map(|metadata| {
-        oxc_resolver::FileMetadata::new(metadata.is_file, metadata.is_dir, metadata.is_symlink)
-      })
+    tokio::task::block_in_place(|| {
+      Handle::current()
+        .block_on(self.0.metadata(path))
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
+        .map(|metadata| {
+          oxc_resolver::FileMetadata::new(metadata.is_file, metadata.is_dir, metadata.is_symlink)
+        })
+    })
   }
 
   fn symlink_metadata(&self, path: &Path) -> std::io::Result<oxc_resolver::FileMetadata> {
-    Handle::current()
-      .block_on(self.0.symbolic_metadata(path))
-      .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
-      .map(|metadata| {
-        oxc_resolver::FileMetadata::new(metadata.is_file, metadata.is_dir, metadata.is_symlink)
-      })
+    tokio::task::block_in_place(|| {
+      Handle::current()
+        .block_on(self.0.symbolic_metadata(path))
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
+        .map(|metadata| {
+          oxc_resolver::FileMetadata::new(metadata.is_file, metadata.is_dir, metadata.is_symlink)
+        })
+    })
   }
 
   fn canonicalize(&self, path: &Path) -> std::io::Result<PathBuf> {
-    Handle::current()
-      .block_on(self.0.canonicalize(path))
-      .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
-      .map(PathBuf::from)
+    tokio::task::block_in_place(|| {
+      Handle::current()
+        .block_on(self.0.canonicalize(path))
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))
+        .map(PathBuf::from)
+    })
   }
 }
 
