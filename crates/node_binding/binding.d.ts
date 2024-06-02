@@ -70,7 +70,7 @@ export class JsStats {
 }
 
 export class Rspack {
-  constructor(options: RawOptions, builtinPlugins: Array<BuiltinPlugin>, registerJsTaps: RegisterJsTaps, outputFilesystem: ThreadsafeNodeFS)
+  constructor(options: RawOptions, builtinPlugins: Array<BuiltinPlugin>, registerJsTaps: RegisterJsTaps, outputFilesystem: ThreadsafeOutputNodeFS, inputFilesystem: ThreadsafeInputNodeFS)
   setNonSkippableRegisters(kinds: Array<RegisterJsTapKind>): void
   /** Build with the given option passed to the constructor */
   build(callback: (err: null | Error) => void): void
@@ -332,6 +332,11 @@ export interface JsDiagnostic {
   message: string
 }
 
+export interface JsDirent {
+  path: string
+  metadata: JsMetadata
+}
+
 export interface JsExecuteModuleArg {
   entry: string
   runtimeModules: Array<string>
@@ -407,6 +412,12 @@ export interface JsLoaderResult {
   cacheable: boolean
   /** Used to instruct how rust loaders should execute */
   isPitching: boolean
+}
+
+export interface JsMetadata {
+  isDir: boolean
+  isFile: boolean
+  isSymlink: boolean
 }
 
 export interface JsModule {
@@ -1473,9 +1484,17 @@ export interface RegisterJsTaps {
 }
 
 /** Builtin loader runner */
-export function runBuiltinLoader(builtin: string, options: string | undefined | null, loaderContext: JsLoaderContext): Promise<JsLoaderContext>
+export function runBuiltinLoader(builtin: string, options: string | undefined | null, loaderContext: JsLoaderContext, inputFilesystem: ThreadsafeInputNodeFS): Promise<JsLoaderContext>
 
-export interface ThreadsafeNodeFS {
+export interface ThreadsafeInputNodeFS {
+  readFile: (name: string) => Promise<string | Buffer> | string | Buffer
+  readDir: (name: string) => Promise<JsDirent[]> | JsDirent[]
+  stat: (name: string) => Promise<Metadata> | Metadata
+  lstat: (name: string) => Promise<Metadata> | Metadata
+  realpath: (name: string) => Promise<string> | string
+}
+
+export interface ThreadsafeOutputNodeFS {
   writeFile: (name: string, content: Buffer) => Promise<void> | void
   removeFile: (name: string) => Promise<void> | void
   mkdir: (name: string) => Promise<void> | void

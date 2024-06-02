@@ -83,7 +83,7 @@ cfg_async! {
     pub stat: ThreadsafeFunction<String, JsMetadata>,
     #[napi(ts_type = "(name: string) => Promise<Metadata> | Metadata")]
     pub lstat: ThreadsafeFunction<String, JsMetadata>,
-    #[napi(ts_type = "(name: string) => Promise<Metadata> | Metadata")]
+    #[napi(ts_type = "(name: string) => Promise<string> | string")]
     pub realpath: ThreadsafeFunction<String, String>,
   }
 

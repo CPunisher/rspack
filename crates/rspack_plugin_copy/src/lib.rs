@@ -1,7 +1,6 @@
 #![feature(let_chains)]
 use std::{
   fmt::Display,
-  fs,
   hash::Hash,
   ops::DerefMut,
   path::{Path, PathBuf, MAIN_SEPARATOR},
