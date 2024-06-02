@@ -8,7 +8,6 @@
  * https://github.com/webpack/webpack/blob/main/LICENSE
  */
 import * as binding from "@rspack/binding";
-import fs from "fs";
 import * as tapable from "tapable";
 import { Callback, SyncBailHook, SyncHook } from "tapable";
 import type Watchpack from "watchpack";
@@ -28,7 +27,10 @@ import { RuleSetCompiler } from "./RuleSetCompiler";
 import { Stats } from "./Stats";
 import ResolverFactory = require("./ResolverFactory");
 import ConcurrentCompilationError from "./error/ConcurrentCompilationError";
-import { ThreadsafeWritableNodeFS } from "./fileSystem";
+import {
+	ThreadsafeReadableNodeFS,
+	ThreadsafeWritableNodeFS
+} from "./fileSystem";
 import Cache = require("./lib/Cache");
 import CacheFacade = require("./lib/CacheFacade");
 import { Source } from "webpack-sources";
@@ -59,7 +61,7 @@ import {
 import { unsupported } from "./util";
 import { assertNotNill } from "./util/assertNotNil";
 import { checkVersion } from "./util/bindingVersionCheck";
-import { OutputFileSystem, WatchFileSystem } from "./util/fs";
+import { InputFileSystem, OutputFileSystem, WatchFileSystem } from "./util/fs";
 import { makePathsRelative } from "./util/identifier";
 import { Watching } from "./Watching";
 
@@ -131,7 +133,7 @@ class Compiler {
 	infrastructureLogger: any;
 	watching?: Watching;
 
-	inputFileSystem: any;
+	inputFileSystem: InputFileSystem | null;
 	intermediateFileSystem: any;
 	outputFileSystem: OutputFileSystem | null;
 	watchFileSystem: WatchFileSystem | null;
@@ -1111,7 +1113,8 @@ class Compiler {
 			rawOptions,
 			this.#builtinPlugins,
 			this.#registers,
-			ThreadsafeWritableNodeFS.__into_binding(this.outputFileSystem!)
+			ThreadsafeWritableNodeFS.__into_binding(this.outputFileSystem),
+			ThreadsafeReadableNodeFS.__into_binding(this.inputFileSystem)
 		);
 
 		callback(null, this.#instance);

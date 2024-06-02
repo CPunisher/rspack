@@ -30,17 +30,6 @@ export interface WatcherInfo {
 	contextTimeInfoEntries: Map<string, FileSystemInfoEntry | "ignore">; // get info about directories
 }
 
-interface IDirent {
-	isFile: () => boolean;
-	isDirectory: () => boolean;
-	isBlockDevice: () => boolean;
-	isCharacterDevice: () => boolean;
-	isSymbolicLink: () => boolean;
-	isFIFO: () => boolean;
-	isSocket: () => boolean;
-	name: string | Buffer;
-}
-
 interface IStats {
 	isFile: () => boolean;
 	isDirectory: () => boolean;
@@ -81,10 +70,7 @@ export interface OutputFileSystem {
 	) => void;
 	readdir: (
 		arg0: string,
-		arg1: (
-			arg0?: null | NodeJS.ErrnoException,
-			arg1?: (string | Buffer)[] | IDirent[]
-		) => void
+		arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string[]) => void
 	) => void;
 	rmdir: (
 		arg0: string,
@@ -222,6 +208,30 @@ export const mkdirp = (
 		callback();
 	});
 };
+
+export interface InputFileSystem {
+	readFile: (
+		arg0: string,
+		arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string | Buffer) => void
+	) => void;
+	readdir: (
+		arg0: string,
+		arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string[]) => void
+	) => void;
+	stat: (
+		arg0: string,
+		arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: IStats) => void
+	) => void;
+	lstat?: (
+		arg0: string,
+		arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: IStats) => void
+	) => void;
+	realpath?: (
+		arg0: string,
+		arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string) => void
+	) => void;
+	purge?: (arg0?: string | string[] | Set<string>) => void;
+}
 
 export interface FileSystemInfoEntry {
 	safeTime: number;

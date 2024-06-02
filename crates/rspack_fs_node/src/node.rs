@@ -75,15 +75,15 @@ cfg_async! {
 
   #[napi(object, object_to_js = false, js_name = "ThreadsafeInputNodeFS")]
   pub struct ThreadsafeInputNodeFS {
-    #[napi(ts_type = "(name: string) => Promise<string | Buffer> | string | Buffer")]
+    #[napi(ts_type = "(name: string) => Promise<string | Buffer | void> | string | Buffer | void")]
     pub read_file: ThreadsafeFunction<String, Either<String, Buffer>>,
-    #[napi(ts_type = "(name: string) => Promise<JsDirent[]> | JsDirent[]")]
+    #[napi(ts_type = "(name: string) => Promise<JsDirent[] | void> | JsDirent[] | void")]
     pub read_dir: ThreadsafeFunction<String, Vec<JsDirent>>,
-    #[napi(ts_type = "(name: string) => Promise<Metadata> | Metadata")]
+    #[napi(ts_type = "(name: string) => Promise<JsMetadata | void> | JsMetadata | void")]
     pub stat: ThreadsafeFunction<String, JsMetadata>,
-    #[napi(ts_type = "(name: string) => Promise<Metadata> | Metadata")]
+    #[napi(ts_type = "(name: string) => Promise<JsMetadata | void> | JsMetadata | void")]
     pub lstat: ThreadsafeFunction<String, JsMetadata>,
-    #[napi(ts_type = "(name: string) => Promise<string> | string")]
+    #[napi(ts_type = "(name: string) => Promise<string | void> | string | void")]
     pub realpath: ThreadsafeFunction<String, String>,
   }
 

@@ -49,20 +49,18 @@ export class StatsProcessor<
 		compilers.forEach((c: Compiler) => {
 			const ifs = c.inputFileSystem;
 			c.inputFileSystem = Object.create(ifs);
-			c.inputFileSystem.readFile = function () {
+			c.inputFileSystem!.readFile = function () {
 				const args = Array.prototype.slice.call(arguments);
 				const callback = args.pop();
-				ifs.readFile.apply(
-					ifs,
-					args.concat([
-						(err: Error, result: Buffer) => {
-							if (err) return callback(err);
-							if (!/\.(js|json|txt)$/.test(args[0]))
-								return callback(null, result);
-							callback(null, escapeEOL(result.toString("utf-8")));
-						}
-					])
-				);
+				ifs!.readFile.apply(ifs, [
+					args[0],
+					(err?: Error | null, result?: Buffer | string) => {
+						if (err) return callback(err);
+						if (!/\.(js|json|txt)$/.test(args[0]))
+							return callback(null, result);
+						callback(null, escapeEOL(result!.toString("utf-8")));
+					}
+				]);
 			};
 
 			// CHANGE: The checkConstraints() function is currently not implemented in rspack

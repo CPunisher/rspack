@@ -1247,7 +1247,7 @@ export class Compiler {
     // (undocumented)
     infrastructureLogger: any;
     // (undocumented)
-    inputFileSystem: any;
+    inputFileSystem: InputFileSystem | null;
     // (undocumented)
     intermediateFileSystem: any;
     // (undocumented)
@@ -3970,26 +3970,6 @@ const htmlRspackPluginOptions: z.ZodObject<{
 }>;
 
 // @public (undocumented)
-interface IDirent {
-    // (undocumented)
-    isBlockDevice: () => boolean;
-    // (undocumented)
-    isCharacterDevice: () => boolean;
-    // (undocumented)
-    isDirectory: () => boolean;
-    // (undocumented)
-    isFIFO: () => boolean;
-    // (undocumented)
-    isFile: () => boolean;
-    // (undocumented)
-    isSocket: () => boolean;
-    // (undocumented)
-    isSymbolicLink: () => boolean;
-    // (undocumented)
-    name: string | Buffer;
-}
-
-// @public (undocumented)
 type IfSet<X> = X extends UnsetAdditionalOptions ? {} : X;
 
 // @public (undocumented)
@@ -4061,6 +4041,22 @@ const infrastructureLogging: z.ZodObject<{
 
 // @public (undocumented)
 type InnerCallback<E, T> = (error?: E | null | false, result?: T) => void;
+
+// @public (undocumented)
+interface InputFileSystem {
+    // (undocumented)
+    lstat?: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: IStats) => void) => void;
+    // (undocumented)
+    purge?: (arg0?: string | string[] | Set<string>) => void;
+    // (undocumented)
+    readdir: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string[]) => void) => void;
+    // (undocumented)
+    readFile: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string | Buffer) => void) => void;
+    // (undocumented)
+    realpath?: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string) => void) => void;
+    // (undocumented)
+    stat: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: IStats) => void) => void;
+}
 
 // @public (undocumented)
 interface IStats {
@@ -5774,8 +5770,8 @@ export class MultiCompiler {
         infrastructureLog: MultiHook<SyncBailHook_2<[string, string, any[]], true>>;
     };
     // (undocumented)
-    get inputFileSystem(): void;
-    set inputFileSystem(value: void);
+    get inputFileSystem(): InputFileSystem;
+    set inputFileSystem(value: InputFileSystem);
     // (undocumented)
     get intermediateFileSystem(): void;
     set intermediateFileSystem(value: void);
@@ -7005,7 +7001,7 @@ export interface OutputFileSystem {
     // (undocumented)
     mkdir: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException) => void) => void;
     // (undocumented)
-    readdir: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: (string | Buffer)[] | IDirent[]) => void) => void;
+    readdir: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string[]) => void) => void;
     // (undocumented)
     readFile: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string | Buffer) => void) => void;
     // (undocumented)

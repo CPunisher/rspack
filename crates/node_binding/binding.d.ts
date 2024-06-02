@@ -1487,11 +1487,11 @@ export interface RegisterJsTaps {
 export function runBuiltinLoader(builtin: string, options: string | undefined | null, loaderContext: JsLoaderContext, inputFilesystem: ThreadsafeInputNodeFS): Promise<JsLoaderContext>
 
 export interface ThreadsafeInputNodeFS {
-  readFile: (name: string) => Promise<string | Buffer> | string | Buffer
-  readDir: (name: string) => Promise<JsDirent[]> | JsDirent[]
-  stat: (name: string) => Promise<Metadata> | Metadata
-  lstat: (name: string) => Promise<Metadata> | Metadata
-  realpath: (name: string) => Promise<string> | string
+  readFile: (name: string) => Promise<string | Buffer | void> | string | Buffer | void
+  readDir: (name: string) => Promise<JsDirent[] | void> | JsDirent[] | void
+  stat: (name: string) => Promise<JsMetadata | void> | JsMetadata | void
+  lstat: (name: string) => Promise<JsMetadata | void> | JsMetadata | void
+  realpath: (name: string) => Promise<string | void> | string | void
 }
 
 export interface ThreadsafeOutputNodeFS {

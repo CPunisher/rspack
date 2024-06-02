@@ -17,6 +17,7 @@ var {
 	toObject,
 	stringifyLoaderObject
 } = require("../util");
+const { ThreadsafeReadableNodeFS } = require("../fileSystem");
 /** @type {undefined | import('node:url')} */
 var url;
 
@@ -63,7 +64,11 @@ module.exports = function loadLoader(loader, callback) {
 								content: isNil(content) ? undefined : toBuffer(content),
 								sourceMap: serializeObject(sourceMap),
 								additionalData
-							})
+							}),
+							ThreadsafeReadableNodeFS.__into_binding(
+								// @ts-expect-error
+								this.__internal__context.fs
+							)
 						);
 
 						// @ts-expect-error
