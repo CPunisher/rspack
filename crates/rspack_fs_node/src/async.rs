@@ -180,6 +180,7 @@ impl AsyncReadableFileSystem for AsyncNodeReadableFileSystem {
               metadata: rspack_fs::r#async::Metadata {
                 is_dir: entry.metadata.is_dir,
                 is_file: entry.metadata.is_file,
+                is_symlink: entry.metadata.is_symlink,
               },
             })
             .collect()
@@ -196,7 +197,7 @@ impl AsyncReadableFileSystem for AsyncNodeReadableFileSystem {
     let fut = async move {
       self
         .0
-        .metadata
+        .stat
         .call(file)
         .await
         .map_err(|e| {
@@ -208,7 +209,47 @@ impl AsyncReadableFileSystem for AsyncNodeReadableFileSystem {
         .map(|metadata| rspack_fs::r#async::Metadata {
           is_dir: metadata.is_dir,
           is_file: metadata.is_file,
+          is_symlink: metadata.is_symlink,
         })
+    };
+    Box::pin(fut)
+  }
+
+  fn symbolic_metadata(
+    &self,
+    file: &Path,
+  ) -> BoxFuture<'_, rspack_fs::Result<rspack_fs::r#async::Metadata>> {
+    let file = file.to_string_lossy().to_string();
+    let fut = async move {
+      self
+        .0
+        .lstat
+        .call(file)
+        .await
+        .map_err(|e| {
+          rspack_fs::Error::Io(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            e.to_string(),
+          ))
+        })
+        .map(|metadata| rspack_fs::r#async::Metadata {
+          is_dir: metadata.is_dir,
+          is_file: metadata.is_file,
+          is_symlink: metadata.is_symlink,
+        })
+    };
+    Box::pin(fut)
+  }
+
+  fn canonicalize(&self, file: &Path) -> BoxFuture<'_, rspack_fs::Result<String>> {
+    let file = file.to_string_lossy().to_string();
+    let fut = async move {
+      self.0.realpath.call(file).await.map_err(|e| {
+        rspack_fs::Error::Io(std::io::Error::new(
+          std::io::ErrorKind::Other,
+          e.to_string(),
+        ))
+      })
     };
     Box::pin(fut)
   }

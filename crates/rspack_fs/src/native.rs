@@ -86,15 +86,16 @@ cfg_async! {
         let mut dir = tokio::fs::read_dir(file).await?;
         let mut dir_entries = Vec::new();
         while let Some(entry) = dir.next_entry().await? {
-            let path = entry.path().to_string_lossy().to_string();
-            let metadata = entry.metadata().await?;
-            dir_entries.push(DirEntry {
-                path,
-                metadata: Metadata {
-                    is_dir: metadata.is_dir(),
-                    is_file: metadata.is_file(),
-                },
-            });
+          let path = entry.path().to_string_lossy().to_string();
+          let metadata = entry.metadata().await?;
+          dir_entries.push(DirEntry {
+            path,
+            metadata: Metadata {
+              is_dir: metadata.is_dir(),
+              is_file: metadata.is_file(),
+              is_symlink: metadata.is_symlink(),
+            },
+          });
         }
         Ok(dir_entries)
       };
@@ -110,7 +111,34 @@ cfg_async! {
           .map(|metadata| Metadata {
             is_dir: metadata.is_dir(),
             is_file: metadata.is_file(),
+            is_symlink: metadata.is_symlink(),
           })
+      };
+      Box::pin(fut)
+    }
+
+    fn symbolic_metadata(&self, file: &Path) -> BoxFuture<'_, Result<Metadata>> {
+      let file = file.to_string_lossy().to_string();
+      let fut = async move {
+        tokio::fs::symlink_metadata(file)
+          .await
+          .map_err(Error::from)
+          .map(|metadata| Metadata {
+            is_dir: metadata.is_dir(),
+            is_file: metadata.is_file(),
+            is_symlink: metadata.file_type().is_symlink(),
+          })
+      };
+      Box::pin(fut)
+    }
+
+    fn canonicalize(&self, file: &Path) -> BoxFuture<'_, Result<String>> {
+      let file = file.to_string_lossy().to_string();
+      let fut = async move {
+        tokio::fs::canonicalize(file)
+          .await
+          .map(|path| path.to_string_lossy().to_string())
+          .map_err(Error::from)
       };
       Box::pin(fut)
     }

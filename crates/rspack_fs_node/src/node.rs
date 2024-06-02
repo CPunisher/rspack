@@ -80,7 +80,11 @@ cfg_async! {
     #[napi(ts_type = "(name: string) => Promise<JsDirent[]> | JsDirent[]")]
     pub read_dir: ThreadsafeFunction<String, Vec<JsDirent>>,
     #[napi(ts_type = "(name: string) => Promise<Metadata> | Metadata")]
-    pub metadata: ThreadsafeFunction<String, JsMetadata>,
+    pub stat: ThreadsafeFunction<String, JsMetadata>,
+    #[napi(ts_type = "(name: string) => Promise<Metadata> | Metadata")]
+    pub lstat: ThreadsafeFunction<String, JsMetadata>,
+    #[napi(ts_type = "(name: string) => Promise<Metadata> | Metadata")]
+    pub realpath: ThreadsafeFunction<String, String>,
   }
 
   #[napi(object, object_to_js = false, js_name = "JsDirent")]
@@ -93,5 +97,6 @@ cfg_async! {
   pub struct JsMetadata {
     pub is_dir: bool,
     pub is_file: bool,
+    pub is_symlink: bool,
   }
 }

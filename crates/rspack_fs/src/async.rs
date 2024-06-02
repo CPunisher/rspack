@@ -34,6 +34,7 @@ pub trait AsyncWritableFileSystem {
 pub struct Metadata {
   pub is_dir: bool,
   pub is_file: bool,
+  pub is_symlink: bool,
 }
 
 pub struct DirEntry {
@@ -50,6 +51,10 @@ pub trait AsyncReadableFileSystem: Send + Sync + std::fmt::Debug {
   fn read_dir(&self, file: &Path) -> BoxFuture<'_, Result<Vec<DirEntry>>>;
 
   fn metadata(&self, file: &Path) -> BoxFuture<'_, Result<Metadata>>;
+
+  fn symbolic_metadata(&self, file: &Path) -> BoxFuture<'_, Result<Metadata>>;
+
+  fn canonicalize(&self, file: &Path) -> BoxFuture<'_, Result<String>>;
 
   fn read_to_string(&self, file: &Path) -> BoxFuture<'_, Result<String>> {
     let file = file.to_owned();
