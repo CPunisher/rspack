@@ -176,6 +176,7 @@ impl AsyncReadableFileSystem for AsyncNodeReadableFileSystem {
           entries
             .into_iter()
             .map(|entry| rspack_fs::r#async::DirEntry {
+              name: entry.name,
               path: entry.path,
               metadata: rspack_fs::r#async::Metadata {
                 is_dir: entry.metadata.is_dir,

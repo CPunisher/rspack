@@ -1036,7 +1036,7 @@ impl ContextModule {
           )
           .await?;
         }
-      } else if entry.path.starts_with('.') {
+      } else if entry.name.starts_with('.') {
         // ignore hidden files
         continue;
       } else {

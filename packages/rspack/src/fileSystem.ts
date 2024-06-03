@@ -80,6 +80,7 @@ class ThreadsafeReadableNodeFS implements ThreadsafeInputNodeFS {
 								return;
 							}
 							dirents.push({
+								name: file,
 								path: joinPath,
 								metadata: {
 									isDir: stat!.isDirectory(),

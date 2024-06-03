@@ -86,9 +86,11 @@ cfg_async! {
         let mut dir = tokio::fs::read_dir(file).await?;
         let mut dir_entries = Vec::new();
         while let Some(entry) = dir.next_entry().await? {
+          let name = entry.file_name().to_string_lossy().to_string();
           let path = entry.path().to_string_lossy().to_string();
           let metadata = entry.metadata().await?;
           dir_entries.push(DirEntry {
+            name,
             path,
             metadata: Metadata {
               is_dir: metadata.is_dir(),

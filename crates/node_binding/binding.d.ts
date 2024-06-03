@@ -333,6 +333,7 @@ export interface JsDiagnostic {
 }
 
 export interface JsDirent {
+  name: string
   path: string
   metadata: JsMetadata
 }

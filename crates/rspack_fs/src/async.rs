@@ -38,6 +38,7 @@ pub struct Metadata {
 }
 
 pub struct DirEntry {
+  pub name: String,
   pub path: String,
   pub metadata: Metadata,
 }

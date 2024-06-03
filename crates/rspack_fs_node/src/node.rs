@@ -89,6 +89,7 @@ cfg_async! {
 
   #[napi(object, object_to_js = false, js_name = "JsDirent")]
   pub struct JsDirent {
+    pub name: String,
     pub path: String,
     pub metadata: JsMetadata,
   }
