@@ -1023,7 +1023,7 @@ impl ContextModule {
       return Ok(());
     }
     for entry in fs.read_dir(dir).await.into_diagnostic()? {
-      let mut path = entry.path.clone();
+      let path = entry.path.clone();
       if entry.metadata.is_dir {
         if options.context_options.recursive {
           Self::visit_dirs(
@@ -1043,6 +1043,7 @@ impl ContextModule {
         // FIXME: nodejs resolver return path of context, sometimes is '/a/b', sometimes is '/a/b/'
         let relative_path = {
           let p = path
+            .clone()
             .drain(ctx.len()..)
             .collect::<String>()
             .replace('\\', "/");
