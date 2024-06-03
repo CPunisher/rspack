@@ -67,7 +67,7 @@ module.exports = function loadLoader(loader, callback) {
 							}),
 							ThreadsafeReadableNodeFS.__into_binding(
 								// @ts-expect-error
-								this.__internal__context.fs
+								this.fs
 							)
 						);
 
