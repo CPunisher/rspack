@@ -52,7 +52,7 @@ pub struct CompilerHooks {
 pub struct Compiler<T, U>
 where
   T: AsyncWritableFileSystem + Send + Sync,
-  U: AsyncReadableFileSystem + Send + Sync + 'static,
+  U: AsyncReadableFileSystem + 'static,
 {
   pub options: Arc<CompilerOptions>,
   pub output_filesystem: T,
@@ -70,7 +70,7 @@ where
 impl<T, U> Compiler<T, U>
 where
   T: AsyncWritableFileSystem + Send + Sync,
-  U: AsyncReadableFileSystem + Send + Sync + 'static,
+  U: AsyncReadableFileSystem + 'static,
 {
   #[instrument(skip_all)]
   pub fn new(

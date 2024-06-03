@@ -132,7 +132,7 @@ pub struct Compilation {
   // The status is different, should generate different hash for `.hot-update.js`
   // So use compilation hash update `hot_index` to fix it.
   pub hot_index: u32,
-  pub fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+  pub fs: Arc<dyn AsyncReadableFileSystem>,
   pub records: Option<CompilationRecords>,
   pub options: Arc<CompilerOptions>,
   pub entries: Entry,
@@ -209,7 +209,7 @@ impl Compilation {
     module_executor: Option<ModuleExecutor>,
     modified_files: HashSet<PathBuf>,
     removed_files: HashSet<PathBuf>,
-    fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+    fs: Arc<dyn AsyncReadableFileSystem>,
   ) -> Self {
     Self {
       id: CompilationId::new(),

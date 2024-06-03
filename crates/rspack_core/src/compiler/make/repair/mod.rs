@@ -20,7 +20,7 @@ use crate::{
 
 pub struct MakeTaskContext {
   // compilation info
-  pub fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+  pub fs: Arc<dyn AsyncReadableFileSystem>,
   pub plugin_driver: SharedPluginDriver,
   pub compiler_options: Arc<CompilerOptions>,
   pub resolver_factory: Arc<ResolverFactory>,

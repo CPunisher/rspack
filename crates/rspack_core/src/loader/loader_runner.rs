@@ -8,7 +8,7 @@ use crate::{CompilerOptions, Context, ModuleIdentifier, ResolverFactory, SharedP
 
 #[derive(Debug, Clone)]
 pub struct CompilerContext {
-  pub fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+  pub fs: Arc<dyn AsyncReadableFileSystem>,
   pub options: Arc<CompilerOptions>,
   pub resolver_factory: Arc<ResolverFactory>,
   pub module: ModuleIdentifier,             // current module

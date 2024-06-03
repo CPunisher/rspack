@@ -75,7 +75,7 @@ impl<'a> ResolveInnerOptions<'a> {
   }
 }
 
-pub struct RspackFileSystem(Arc<dyn AsyncReadableFileSystem + Send + Sync>);
+pub struct RspackFileSystem(Arc<dyn AsyncReadableFileSystem>);
 
 impl FileSystem for RspackFileSystem {
   fn read_to_string(&self, path: &Path) -> std::io::Result<String> {
@@ -129,14 +129,11 @@ pub enum Resolver {
 }
 
 impl Resolver {
-  pub fn new(fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>, options: Resolve) -> Self {
+  pub fn new(fs: Arc<dyn AsyncReadableFileSystem>, options: Resolve) -> Self {
     Self::new_oxc_resolver(fs, options)
   }
 
-  fn new_oxc_resolver(
-    fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
-    options: Resolve,
-  ) -> Self {
+  fn new_oxc_resolver(fs: Arc<dyn AsyncReadableFileSystem>, options: Resolve) -> Self {
     let options = to_oxc_resolver_options(options, false, DependencyCategory::Unknown);
     let resolver = RspackOxcResolver::new_with_file_system(RspackFileSystem(fs.clone()), options);
     Self::OxcResolver(resolver)

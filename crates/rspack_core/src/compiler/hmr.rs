@@ -15,7 +15,7 @@ use crate::{
 impl<T, U> Compiler<T, U>
 where
   T: AsyncWritableFileSystem + Send + Sync,
-  U: AsyncReadableFileSystem + Send + Sync,
+  U: AsyncReadableFileSystem,
 {
   pub async fn rebuild(
     &mut self,

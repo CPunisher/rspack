@@ -12,7 +12,7 @@ use crate::{
 
 #[derive(Debug)]
 pub struct BuildTask {
-  pub fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+  pub fs: Arc<dyn AsyncReadableFileSystem>,
   pub module: Box<dyn Module>,
   pub current_profile: Option<Box<ModuleProfile>>,
   pub resolver_factory: Arc<ResolverFactory>,

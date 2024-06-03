@@ -29,7 +29,7 @@ impl ResolverFactory {
     self.resolver.clear_cache();
   }
 
-  pub fn new(fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>, options: Resolve) -> Self {
+  pub fn new(fs: Arc<dyn AsyncReadableFileSystem>, options: Resolve) -> Self {
     Self {
       base_options: options.clone(),
       resolver: Resolver::new(fs.clone(), options),

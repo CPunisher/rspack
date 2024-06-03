@@ -1017,7 +1017,7 @@ impl ContextModule {
     dependencies: &mut Vec<ContextElementDependency>,
     options: &ContextModuleOptions,
     resolve_options: &ResolveInnerOptions<'_>,
-    fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+    fs: Arc<dyn AsyncReadableFileSystem>,
   ) -> Result<()> {
     if !dir.is_dir() {
       return Ok(());
@@ -1091,7 +1091,7 @@ impl ContextModule {
 
   async fn resolve_dependencies(
     &self,
-    fs: Arc<dyn AsyncReadableFileSystem + Send + Sync>,
+    fs: Arc<dyn AsyncReadableFileSystem>,
   ) -> Result<(Vec<BoxDependency>, Vec<AsyncDependenciesBlock>)> {
     tracing::trace!("resolving context module path {}", self.options.resource);
 
