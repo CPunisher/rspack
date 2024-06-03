@@ -4045,6 +4045,8 @@ type InnerCallback<E, T> = (error?: E | null | false, result?: T) => void;
 // @public (undocumented)
 interface InputFileSystem {
     // (undocumented)
+    join?: (arg0: string, arg1: string) => string;
+    // (undocumented)
     lstat?: (arg0: string, arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: IStats) => void) => void;
     // (undocumented)
     purge?: (arg0?: string | string[] | Set<string>) => void;

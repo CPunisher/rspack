@@ -139,7 +139,11 @@ export function rmrf(
 	});
 }
 
-const join = (fs: OutputFileSystem, rootPath: string, filename: string) => {
+export function join(
+	fs: InputFileSystem | OutputFileSystem,
+	rootPath: string,
+	filename: string
+) {
 	if (fs && fs.join) {
 		return fs.join(rootPath, filename);
 	} else if (path.posix.isAbsolute(rootPath)) {
@@ -151,7 +155,7 @@ const join = (fs: OutputFileSystem, rootPath: string, filename: string) => {
 			`${rootPath} is neither a posix nor a windows path, and there is no 'join' method defined in the file system`
 		);
 	}
-};
+}
 
 const dirname = (fs: OutputFileSystem, absPath: string) => {
 	if (fs && fs.dirname) {
@@ -230,6 +234,7 @@ export interface InputFileSystem {
 		arg0: string,
 		arg1: (arg0?: null | NodeJS.ErrnoException, arg1?: string) => void
 	) => void;
+	join?: (arg0: string, arg1: string) => string;
 	purge?: (arg0?: string | string[] | Set<string>) => void;
 }
 

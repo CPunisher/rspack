@@ -2,10 +2,17 @@ import {
 	JsDirent,
 	JsMetadata,
 	ThreadsafeInputNodeFS,
-	ThreadsafeOutputNodeFS} from "@rspack/binding";
+	ThreadsafeOutputNodeFS
+} from "@rspack/binding";
 import util from "util";
 
-import { InputFileSystem, mkdirp, OutputFileSystem, rmrf } from "./util/fs";
+import {
+	InputFileSystem,
+	join,
+	mkdirp,
+	OutputFileSystem,
+	rmrf
+} from "./util/fs";
 import { memoizeFn } from "./util/memoize";
 
 const NOOP_FILESYSTEM: ThreadsafeOutputNodeFS = {
@@ -63,24 +70,28 @@ class ThreadsafeReadableNodeFS implements ThreadsafeInputNodeFS {
 						callback(err);
 						return;
 					}
-					fs.stat(arg0, (err, stat) => {
-						if (err) {
-							callback(err);
-							return;
-						}
-						const dirents = files!.map(
-							file =>
-								({
-									path: file,
-									metadata: {
-										isDir: stat!.isDirectory(),
-										isFile: stat!.isFile(),
-										isSymlink: stat!.isSymbolicLink()
-									}
-								}) satisfies JsDirent
-						);
-						callback(null, dirents);
-					});
+					const dirents: JsDirent[] = [];
+					let count = files!.length;
+					for (const file of files!) {
+						const joinPath = join(fs, arg0, file);
+						fs.stat(joinPath, (err, stat) => {
+							if (err) {
+								callback(err);
+								return;
+							}
+							dirents.push({
+								path: joinPath,
+								metadata: {
+									isDir: stat!.isDirectory(),
+									isFile: stat!.isFile(),
+									isSymlink: stat!.isSymbolicLink()
+								}
+							});
+							if (--count === 0) {
+								callback(null, dirents);
+							}
+						});
+					}
 				});
 			})
 		);
@@ -122,4 +133,4 @@ class ThreadsafeReadableNodeFS implements ThreadsafeInputNodeFS {
 	}
 }
 
-export { ThreadsafeReadableNodeFS,ThreadsafeWritableNodeFS };
+export { ThreadsafeReadableNodeFS, ThreadsafeWritableNodeFS };
