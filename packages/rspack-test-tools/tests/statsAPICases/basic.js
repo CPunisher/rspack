@@ -27,12 +27,14 @@ module.exports = {
 		    [no exports]
 		    [used exports unknown]
 		    Statement with side_effects in source code at ./fixtures/a.js:1:0-3:2
+		    ModuleConcatenation bailout: Module is not an ECMAScript module
 		    entry ./fixtures/a
 		    cjs self exports reference self [585]
 		./fixtures/a.js [585] {909}
 		  [no exports]
 		  [used exports unknown]
 		  Statement with side_effects in source code at ./fixtures/a.js:1:0-3:2
+		  ModuleConcatenation bailout: Module is not an ECMAScript module
 		  entry ./fixtures/a
 		  cjs self exports reference self [585]
 		  

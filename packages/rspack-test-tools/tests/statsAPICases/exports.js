@@ -24,21 +24,13 @@ module.exports = {
 		expect(typeof stats?.hash).toBe("string");
 		expect(stats?.toJson(statsOptions)).toMatchSnapshot();
 		expect(stats?.toString(statsOptions)).toMatchInlineSnapshot(`
-		"asset main.js 714 bytes [emitted] (name: main)
-		Entrypoint main 714 bytes = main.js
+		"asset main.js 475 bytes [emitted] (name: main)
+		Entrypoint main 475 bytes = main.js
+		orphan modules [orphan] 4 modules
 		runtime modules 3 modules
-		javascript modules
-		  ./fixtures/esm/a.js
-		    [exports: a, default]
-		    [only some exports used: a]
-		  ./fixtures/esm/b.js
-		    [exports: b, default]
-		    [only some exports used: default]
-		  ./fixtures/esm/c.js
-		    [exports: c, default]
-		  ./fixtures/esm/abc.js
-		    [no exports]
-		    [no exports used]
+		./fixtures/esm/abc.js + 3 modules
+		  [no exports]
+		  [no exports used]
 		Rspack compiled successfully"
 	`);
 	}

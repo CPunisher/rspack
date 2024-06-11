@@ -2,27 +2,32 @@
 
 exports[`statsOutput statsOutput/auxiliary-files-test should print correct stats for 1`] = `
 "PublicPath: auto
-asset bundle.js 2.58 KiB {909} [emitted] (name: main)
+asset bundle.js 2.26 KiB {909} [emitted] (name: main)
 asset 2710c5e36f8babb0a3a4.png 7 bytes {909} [emitted] [from: raw.png] (name: main)
-Entrypoint main 2.58 KiB = bundle.js
+Entrypoint main 2.26 KiB = bundle.js
 chunk {909} bundle.js (main) [entry]
-  ./index.js [10] {909}
+  ./index.js + 1 modules [686] {909}
     [no exports]
     [no exports used]
     entry ./index
   ./raw.png [193] {909}
     [no exports]
     [no exports used]
-    esm import ./raw.png [10]
+    esm import ./raw.png
 javascript modules
-  ./index.js [10] {909}
+  ./index.js [orphan]
     [no exports]
     [no exports used]
-    entry ./index
+    ModuleConcatenation bailout: Module is an entry point
   ./stringModule.js [orphan]
     [no exports]
     [module unused]
-    esm import ./stringModule [10]
+    ModuleConcatenation bailout: Module is not an ECMAScript module
+    esm import ./stringModule [686]
+  ./index.js + 1 modules [686] {909}
+    [no exports]
+    [no exports used]
+    entry ./index
 runtime modules
   webpack/runtime/global {909}
     [no exports]
@@ -33,9 +38,9 @@ runtime modules
 ./raw.png [193] {909}
   [no exports]
   [no exports used]
-  esm import ./raw.png [10]
+  esm import ./raw.png
   
-Rspack compiled successfully (9bcf52011e342a43887f)"
+Rspack compiled successfully (b80517bb227cd1505d5a)"
 `;
 
 exports[`statsOutput statsOutput/builtin-swc-loader-parse-error should print correct stats for 1`] = `
@@ -413,21 +418,14 @@ Rspack x.x.x compiled successfully in X s"
 `;
 
 exports[`statsOutput statsOutput/side-effects-bailouts should print correct stats for 1`] = `
-"asset main.js 1.86 KiB {909} [emitted] (name: main)
-Entrypoint main 1.86 KiB = main.js
+"asset main.js 207 bytes {909} [emitted] (name: main)
+Entrypoint main 207 bytes = main.js
 chunk {909} main.js (main) [entry]
-runtime modules 2 modules
-javascript modules
-  ./lib.js [467] {909}
-    [exports: test]
-    [all exports used]
-    Statement with side_effects in source code at ./lib.js:5:0-9
-    esm import ./lib.js [10]
-    esm import specifier ./lib.js [10]
-  ./index.js [10] {909}
-    [no exports]
-    [no exports used]
-    entry ./index.js
+orphan modules [orphan] 2 modules
+./index.js + 1 modules [911] {909}
+  [no exports]
+  [no exports used]
+  entry ./index.js
   
 Rspack x.x.x compiled successfully in X s"
 `;

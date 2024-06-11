@@ -54,6 +54,7 @@ Object {
           "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/a.js",
           "optimizationBailout": Array [
             "Statement with side_effects in source code at ./fixtures/a.js:1:0-3:2",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module",
           ],
           "orphan": false,
           "providedExports": Array [],
@@ -127,6 +128,7 @@ Object {
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/a.js",
       "optimizationBailout": Array [
         "Statement with side_effects in source code at ./fixtures/a.js:1:0-3:2",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module",
       ],
       "orphan": false,
       "providedExports": Array [],
@@ -192,7 +194,7 @@ Object {
         "hotModuleReplacement": false,
       },
       "name": "main.js",
-      "size": 714,
+      "size": 475,
       "type": "asset",
     },
   ],
@@ -219,62 +221,14 @@ Object {
           "chunks": Array [
             "909",
           ],
-          "id": "83",
-          "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/a.js",
-          "issuer": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-          "issuerId": "314",
-          "issuerName": "./fixtures/esm/abc.js",
-          "issuerPath": Array [
-            Object {
-              "id": "314",
-              "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "name": "./fixtures/esm/abc.js",
-            },
-          ],
-          "moduleType": "javascript/auto",
-          "name": "./fixtures/esm/a.js",
-          "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/a.js",
-          "optimizationBailout": Array [],
-          "orphan": false,
-          "providedExports": Array [
-            "a",
-            "default",
-          ],
-          "reasons": Array [
-            Object {
-              "moduleId": "314",
-              "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "moduleName": "./fixtures/esm/abc.js",
-              "type": "esm import",
-              "userRequest": "./a",
-            },
-            Object {
-              "moduleId": "314",
-              "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "moduleName": "./fixtures/esm/abc.js",
-              "type": "esm import specifier",
-              "userRequest": "./a",
-            },
-          ],
-          "size": 37,
-          "type": "module",
-          "usedExports": Array [
-            "a",
-          ],
-        },
-        Object {
-          "assets": Array [],
-          "chunks": Array [
-            "909",
-          ],
-          "id": "314",
-          "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
+          "id": "533",
+          "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js|0e47874493fdefd960142324ecb88ecc",
           "issuer": undefined,
           "issuerId": undefined,
           "issuerName": undefined,
           "issuerPath": Array [],
-          "moduleType": "javascript/auto",
-          "name": "./fixtures/esm/abc.js",
+          "moduleType": "javascript/esm",
+          "name": "./fixtures/esm/abc.js + 3 modules",
           "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "optimizationBailout": Array [],
           "orphan": false,
@@ -288,103 +242,9 @@ Object {
               "userRequest": "./fixtures/esm/abc",
             },
           ],
-          "size": 80,
+          "size": 192,
           "type": "module",
           "usedExports": Array [],
-        },
-        Object {
-          "assets": Array [],
-          "chunks": Array [
-            "909",
-          ],
-          "id": "178",
-          "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/b.js",
-          "issuer": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-          "issuerId": "314",
-          "issuerName": "./fixtures/esm/abc.js",
-          "issuerPath": Array [
-            Object {
-              "id": "314",
-              "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "name": "./fixtures/esm/abc.js",
-            },
-          ],
-          "moduleType": "javascript/auto",
-          "name": "./fixtures/esm/b.js",
-          "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/b.js",
-          "optimizationBailout": Array [],
-          "orphan": false,
-          "providedExports": Array [
-            "b",
-            "default",
-          ],
-          "reasons": Array [
-            Object {
-              "moduleId": "314",
-              "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "moduleName": "./fixtures/esm/abc.js",
-              "type": "esm import",
-              "userRequest": "./b",
-            },
-            Object {
-              "moduleId": "314",
-              "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "moduleName": "./fixtures/esm/abc.js",
-              "type": "esm import specifier",
-              "userRequest": "./b",
-            },
-          ],
-          "size": 38,
-          "type": "module",
-          "usedExports": Array [
-            "default",
-          ],
-        },
-        Object {
-          "assets": Array [],
-          "chunks": Array [
-            "909",
-          ],
-          "id": "609",
-          "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/c.js",
-          "issuer": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-          "issuerId": "314",
-          "issuerName": "./fixtures/esm/abc.js",
-          "issuerPath": Array [
-            Object {
-              "id": "314",
-              "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "name": "./fixtures/esm/abc.js",
-            },
-          ],
-          "moduleType": "javascript/auto",
-          "name": "./fixtures/esm/c.js",
-          "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/c.js",
-          "optimizationBailout": Array [],
-          "orphan": false,
-          "providedExports": Array [
-            "c",
-            "default",
-          ],
-          "reasons": Array [
-            Object {
-              "moduleId": "314",
-              "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "moduleName": "./fixtures/esm/abc.js",
-              "type": "esm import",
-              "userRequest": "./c",
-            },
-            Object {
-              "moduleId": "314",
-              "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-              "moduleName": "./fixtures/esm/abc.js",
-              "type": "esm import specifier",
-              "userRequest": "./c",
-            },
-          ],
-          "size": 37,
-          "type": "module",
-          "usedExports": true,
         },
       ],
       "names": Array [
@@ -401,10 +261,10 @@ Object {
       "assets": Array [
         Object {
           "name": "main.js",
-          "size": 714,
+          "size": 475,
         },
       ],
-      "assetsSize": 714,
+      "assetsSize": 475,
       "chunks": Array [
         "909",
       ],
@@ -414,21 +274,19 @@ Object {
   "errors": Array [],
   "errorsCount": 0,
   "filteredModules": undefined,
-  "hash": "23ccfb7f871f0e79f18a",
+  "hash": "f6096f777ad767c7ff89",
   "modules": Array [
     Object {
       "assets": Array [],
-      "chunks": Array [
-        "909",
-      ],
-      "id": "83",
+      "chunks": Array [],
+      "id": undefined,
       "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/a.js",
       "issuer": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-      "issuerId": "314",
+      "issuerId": undefined,
       "issuerName": "./fixtures/esm/abc.js",
       "issuerPath": Array [
         Object {
-          "id": "314",
+          "id": undefined,
           "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "name": "./fixtures/esm/abc.js",
         },
@@ -437,21 +295,21 @@ Object {
       "name": "./fixtures/esm/a.js",
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/a.js",
       "optimizationBailout": Array [],
-      "orphan": false,
+      "orphan": true,
       "providedExports": Array [
         "a",
         "default",
       ],
       "reasons": Array [
         Object {
-          "moduleId": "314",
+          "moduleId": undefined,
           "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "moduleName": "./fixtures/esm/abc.js",
           "type": "esm import",
           "userRequest": "./a",
         },
         Object {
-          "moduleId": "314",
+          "moduleId": undefined,
           "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "moduleName": "./fixtures/esm/abc.js",
           "type": "esm import specifier",
@@ -466,17 +324,15 @@ Object {
     },
     Object {
       "assets": Array [],
-      "chunks": Array [
-        "909",
-      ],
-      "id": "178",
+      "chunks": Array [],
+      "id": undefined,
       "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/b.js",
       "issuer": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-      "issuerId": "314",
+      "issuerId": undefined,
       "issuerName": "./fixtures/esm/abc.js",
       "issuerPath": Array [
         Object {
-          "id": "314",
+          "id": undefined,
           "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "name": "./fixtures/esm/abc.js",
         },
@@ -485,21 +341,21 @@ Object {
       "name": "./fixtures/esm/b.js",
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/b.js",
       "optimizationBailout": Array [],
-      "orphan": false,
+      "orphan": true,
       "providedExports": Array [
         "b",
         "default",
       ],
       "reasons": Array [
         Object {
-          "moduleId": "314",
+          "moduleId": undefined,
           "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "moduleName": "./fixtures/esm/abc.js",
           "type": "esm import",
           "userRequest": "./b",
         },
         Object {
-          "moduleId": "314",
+          "moduleId": undefined,
           "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "moduleName": "./fixtures/esm/abc.js",
           "type": "esm import specifier",
@@ -514,17 +370,15 @@ Object {
     },
     Object {
       "assets": Array [],
-      "chunks": Array [
-        "909",
-      ],
-      "id": "609",
+      "chunks": Array [],
+      "id": undefined,
       "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/c.js",
       "issuer": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-      "issuerId": "314",
+      "issuerId": undefined,
       "issuerName": "./fixtures/esm/abc.js",
       "issuerPath": Array [
         Object {
-          "id": "314",
+          "id": undefined,
           "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "name": "./fixtures/esm/abc.js",
         },
@@ -533,21 +387,21 @@ Object {
       "name": "./fixtures/esm/c.js",
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/c.js",
       "optimizationBailout": Array [],
-      "orphan": false,
+      "orphan": true,
       "providedExports": Array [
         "c",
         "default",
       ],
       "reasons": Array [
         Object {
-          "moduleId": "314",
+          "moduleId": undefined,
           "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "moduleName": "./fixtures/esm/abc.js",
           "type": "esm import",
           "userRequest": "./c",
         },
         Object {
-          "moduleId": "314",
+          "moduleId": undefined,
           "moduleIdentifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
           "moduleName": "./fixtures/esm/abc.js",
           "type": "esm import specifier",
@@ -560,10 +414,8 @@ Object {
     },
     Object {
       "assets": Array [],
-      "chunks": Array [
-        "909",
-      ],
-      "id": "314",
+      "chunks": Array [],
+      "id": undefined,
       "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
       "issuer": undefined,
       "issuerId": undefined,
@@ -572,18 +424,12 @@ Object {
       "moduleType": "javascript/auto",
       "name": "./fixtures/esm/abc.js",
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
-      "optimizationBailout": Array [],
-      "orphan": false,
-      "providedExports": Array [],
-      "reasons": Array [
-        Object {
-          "moduleId": undefined,
-          "moduleIdentifier": undefined,
-          "moduleName": undefined,
-          "type": "entry",
-          "userRequest": "./fixtures/esm/abc",
-        },
+      "optimizationBailout": Array [
+        "ModuleConcatenation bailout: Module is an entry point",
       ],
+      "orphan": true,
+      "providedExports": Array [],
+      "reasons": Array [],
       "size": 80,
       "type": "module",
       "usedExports": Array [],
@@ -609,6 +455,36 @@ Object {
       "size": 160,
       "type": "module",
       "usedExports": null,
+    },
+    Object {
+      "assets": Array [],
+      "chunks": Array [
+        "909",
+      ],
+      "id": "533",
+      "identifier": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js|0e47874493fdefd960142324ecb88ecc",
+      "issuer": undefined,
+      "issuerId": undefined,
+      "issuerName": undefined,
+      "issuerPath": Array [],
+      "moduleType": "javascript/esm",
+      "name": "./fixtures/esm/abc.js + 3 modules",
+      "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/esm/abc.js",
+      "optimizationBailout": Array [],
+      "orphan": false,
+      "providedExports": Array [],
+      "reasons": Array [
+        Object {
+          "moduleId": undefined,
+          "moduleIdentifier": undefined,
+          "moduleName": undefined,
+          "type": "entry",
+          "userRequest": "./fixtures/esm/abc",
+        },
+      ],
+      "size": 192,
+      "type": "module",
+      "usedExports": Array [],
     },
     Object {
       "assets": Array [],
@@ -660,10 +536,10 @@ Object {
       "assets": Array [
         Object {
           "name": "main.js",
-          "size": 714,
+          "size": 475,
         },
       ],
-      "assetsSize": 714,
+      "assetsSize": 475,
       "chunks": Array [
         "909",
       ],
@@ -807,6 +683,7 @@ Object {
           "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/a.js",
           "optimizationBailout": Array [
             "Statement with side_effects in source code at ./fixtures/a.js:1:0-3:2",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module",
           ],
           "orphan": false,
           "providedExports": Array [],
@@ -855,6 +732,7 @@ Object {
           "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/a.js",
           "optimizationBailout": Array [
             "Statement with side_effects in source code at ./fixtures/a.js?a=1:1:0-3:2",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module",
           ],
           "orphan": false,
           "providedExports": Array [],
@@ -897,6 +775,7 @@ Object {
           "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/abc-query.js",
           "optimizationBailout": Array [
             "Statement with side_effects in source code at ./fixtures/abc-query.js:1:0-31",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module",
           ],
           "orphan": false,
           "providedExports": Array [
@@ -942,6 +821,7 @@ exports.c = require(\\"./c?c=3\\");
           "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/c.js",
           "optimizationBailout": Array [
             "Statement with side_effects in source code at ./fixtures/c.js?c=3:1:0-4:2",
+            "ModuleConcatenation bailout: Module is not an ECMAScript module",
           ],
           "orphan": false,
           "providedExports": Array [],
@@ -1027,6 +907,7 @@ exports.c = require(\\"./c?c=3\\");
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/a.js",
       "optimizationBailout": Array [
         "Statement with side_effects in source code at ./fixtures/a.js:1:0-3:2",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module",
       ],
       "orphan": false,
       "providedExports": Array [],
@@ -1075,6 +956,7 @@ exports.c = require(\\"./c?c=3\\");
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/a.js",
       "optimizationBailout": Array [
         "Statement with side_effects in source code at ./fixtures/a.js?a=1:1:0-3:2",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module",
       ],
       "orphan": false,
       "providedExports": Array [],
@@ -1123,6 +1005,7 @@ exports.c = require(\\"./c?c=3\\");
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/c.js",
       "optimizationBailout": Array [
         "Statement with side_effects in source code at ./fixtures/c.js?c=3:1:0-4:2",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module",
       ],
       "orphan": false,
       "providedExports": Array [],
@@ -1166,6 +1049,7 @@ exports.c = require(\\"./c?c=3\\");
       "nameForCondition": "<PROJECT_ROOT>/tests/fixtures/abc-query.js",
       "optimizationBailout": Array [
         "Statement with side_effects in source code at ./fixtures/abc-query.js:1:0-31",
+        "ModuleConcatenation bailout: Module is not an ECMAScript module",
       ],
       "orphan": false,
       "providedExports": Array [
