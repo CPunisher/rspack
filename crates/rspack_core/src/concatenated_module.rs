@@ -610,6 +610,11 @@ impl Module for ConcatenatedModule {
         } else {
           build_info.top_level_declarations = None;
         }
+
+        // populate assets
+        for asset in module_build_info.asset_filenames.iter() {
+          build_info.asset_filenames.insert(asset.clone());
+        }
       }
     }
     self.set_build_info(build_info);
