@@ -118,7 +118,7 @@ impl UnaffectedModuleCache {
       .hash
       .as_ref()
       .hash(&mut hasher);
-    for connection_id in module_graph
+    for &connection_id in module_graph
       .get_ordered_connections(&module.identifier())
       .expect("should have module")
     {
@@ -148,7 +148,7 @@ impl UnaffectedModuleWithChunkGraphCache {
       .get_ordered_connections(&module_identifier)
       .expect("should have module")
       .into_iter()
-      .filter_map(|c| {
+      .filter_map(|&c| {
         let connection = module_graph
           .connection_by_connection_id(c)
           .expect("should have connection");

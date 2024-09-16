@@ -147,7 +147,7 @@ struct ConcatenationEntryExternal {
 impl ConcatenationEntryExternal {
   pub fn module(&self, mg: &ModuleGraph) -> ModuleIdentifier {
     let con = mg
-      .connection_by_connection_id(&self.connection)
+      .connection_by_connection_id(self.connection)
       .expect("should have connection");
     *con.module_identifier()
   }

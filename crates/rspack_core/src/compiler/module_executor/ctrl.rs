@@ -259,7 +259,7 @@ impl Task<MakeTaskContext> for FinishModuleTask {
         .expect("should have mgm");
 
       let mut original_module_identifiers = HashSet::default();
-      for connection_id in mgm.incoming_connections() {
+      for &connection_id in mgm.incoming_connections() {
         let connection = module_graph
           .connection_by_connection_id(connection_id)
           .expect("should have connection");

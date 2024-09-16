@@ -859,7 +859,7 @@ impl Stats<'_> {
       let mut reasons: Vec<StatsModuleReason> = mgm
         .get_incoming_connections_unordered()
         .iter()
-        .filter_map(|connection_id| {
+        .filter_map(|&connection_id| {
           // the connection is removed
           let connection = module_graph.connection_by_connection_id(connection_id)?;
           let (module_name, module_id) = connection

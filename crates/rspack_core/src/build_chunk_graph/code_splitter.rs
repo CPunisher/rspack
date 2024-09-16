@@ -285,13 +285,13 @@ fn get_active_state_of_connections(
   let mut iter = connections.iter();
   let id = iter.next().expect("should have connection");
   let mut merged = module_graph
-    .connection_by_connection_id(id)
+    .connection_by_connection_id(*id)
     .expect("should have connection")
     .get_active_state(module_graph, runtime);
   if merged.is_true() {
     return merged;
   }
-  for c in iter {
+  for &c in iter {
     let c = module_graph
       .connection_by_connection_id(c)
       .expect("should have connection");
@@ -1502,7 +1502,7 @@ Or do you want to use the entrypoints '{name}' and '{runtime}' independently on 
       .get_ordered_connections(&module)
       .expect("should have module")
       .into_iter()
-      .map(|conn_id| {
+      .map(|&conn_id| {
         let conn = module_graph
           .connection_by_connection_id(conn_id)
           .expect("should have connection");
@@ -1542,8 +1542,8 @@ Or do you want to use the entrypoints '{name}' and '{runtime}' independently on 
         };
       connection_map
         .entry((block_id, *module_identifier))
-        .and_modify(|e| e.push(*connection_id))
-        .or_insert_with(|| vec![*connection_id]);
+        .and_modify(|e| e.push(connection_id))
+        .or_insert_with(|| vec![connection_id]);
     }
 
     for ((block_id, module_identifier), connections) in connection_map {

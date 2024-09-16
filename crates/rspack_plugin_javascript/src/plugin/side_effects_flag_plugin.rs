@@ -749,7 +749,7 @@ fn optimize_incoming_connection(
 ) {
   let module_graph = compilation.get_module_graph();
   let connection = module_graph
-    .connection_by_connection_id(&connection_id)
+    .connection_by_connection_id(connection_id)
     .expect("should have connection");
   let Some(dep) = module_graph.dependency_by_id(connection.dependency_id) else {
     return;
@@ -792,7 +792,7 @@ fn do_optimize_incoming_connection(
   }
   let mut module_graph = compilation.get_module_graph_mut();
   let connection = module_graph
-    .connection_by_connection_id(&connection_id)
+    .connection_by_connection_id(connection_id)
     .expect("should have connection");
   let dep_id = connection.dependency_id;
   let dep = module_graph

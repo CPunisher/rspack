@@ -137,7 +137,7 @@ impl Cutout {
           .clean_isolated_module
           .add_need_check_module(*con.module_identifier());
         let con_id = con.id;
-        module_graph.revoke_connection(&con_id, true);
+        module_graph.revoke_connection(con_id, true);
       }
       force_build_deps.remove(&(dep_id, None));
     }

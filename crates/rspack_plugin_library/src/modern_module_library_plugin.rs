@@ -251,7 +251,7 @@ async fn finish_modules(&self, compilation: &mut Compilation) -> Result<()> {
       let boxed_dep = Box::new(new_dep.clone()) as Box<dyn rspack_core::Dependency>;
       block.add_dependency_id(new_dep.id());
       mg.add_dependency(boxed_dep);
-      mg.revoke_connection(connection_id, true);
+      mg.revoke_connection(*connection_id, true);
     }
   }
 
