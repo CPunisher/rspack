@@ -145,7 +145,7 @@ impl<'a> FlagDependencyUsagePluginProxy<'a> {
       }
       for dep_id in dep_id_list.into_iter() {
         let module_graph = self.compilation.get_module_graph();
-        let connection = module_graph.connection_by_dependency(&dep_id);
+        let connection = module_graph.connection_by_dependency(dep_id);
 
         let connection = if let Some(connection) = connection {
           connection
@@ -171,7 +171,7 @@ impl<'a> FlagDependencyUsagePluginProxy<'a> {
         }
         let old_referenced_exports = map.remove(connection.module_identifier());
         let dep = module_graph
-          .dependency_by_id(&dep_id)
+          .dependency_by_id(dep_id)
           .expect("should have dep");
 
         let referenced_exports = if let Some(md) = dep.as_module_dependency() {
@@ -281,7 +281,7 @@ impl<'a> FlagDependencyUsagePluginProxy<'a> {
     if let Some(module) = self
       .compilation
       .get_module_graph()
-      .module_graph_module_by_dependency_id(&dep)
+      .module_graph_module_by_dependency_id(dep)
     {
       self.process_referenced_module(module.module_identifier, vec![], runtime, true, queue);
     }

@@ -21,8 +21,8 @@ impl CssComposeDependency {
 }
 
 impl Dependency for CssComposeDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

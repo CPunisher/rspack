@@ -220,7 +220,7 @@ impl Task<MakeTaskContext> for FactorizeResultTask {
       } else {
         artifact
           .make_failed_dependencies
-          .insert((*dependencies[0].id(), None));
+          .insert((dependencies[0].id(), None));
       }
     }
 

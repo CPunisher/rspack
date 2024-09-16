@@ -36,8 +36,8 @@ impl WasmImportDependency {
 }
 
 impl Dependency for WasmImportDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

@@ -62,7 +62,7 @@ impl RuntimeModule for RemoteRuntimeModule {
         let share_scope = m.share_scope.as_str();
         let dep = m.get_dependencies()[0];
         let external_module = module_graph
-          .get_module_by_dependency_id(&dep)
+          .get_module_by_dependency_id(dep)
           .expect("should have module");
         let external_module_id = compilation
           .chunk_graph

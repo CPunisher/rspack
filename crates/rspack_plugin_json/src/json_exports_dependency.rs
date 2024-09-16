@@ -22,8 +22,8 @@ impl JsonExportsDependency {
 }
 
 impl Dependency for JsonExportsDependency {
-  fn id(&self) -> &rspack_core::DependencyId {
-    &self.id
+  fn id(&self) -> rspack_core::DependencyId {
+    self.id
   }
 
   fn get_exports(&self, _mg: &ModuleGraph) -> Option<ExportsSpec> {

@@ -439,7 +439,7 @@ impl Compilation {
   }
 
   // TODO move out from compilation
-  pub fn get_import_var(&self, dep_id: &DependencyId) -> String {
+  pub fn get_import_var(&self, dep_id: DependencyId) -> String {
     let module_graph = self.get_module_graph();
     let parent_module_id = module_graph
       .get_parent_module(dep_id)
@@ -467,7 +467,7 @@ impl Compilation {
   }
 
   pub async fn add_entry(&mut self, entry: BoxDependency, options: EntryOptions) -> Result<()> {
-    let entry_id = *entry.id();
+    let entry_id = entry.id();
     let entry_name = options.name.clone();
     self.get_module_graph_mut().add_dependency(entry);
     if let Some(name) = &entry_name {
@@ -497,7 +497,7 @@ impl Compilation {
   }
 
   pub async fn add_include(&mut self, entry: BoxDependency, options: EntryOptions) -> Result<()> {
-    let entry_id = *entry.id();
+    let entry_id = entry.id();
     self.get_module_graph_mut().add_dependency(entry);
     if let Some(name) = options.name.clone() {
       if let Some(data) = self.entries.get_mut(&name) {
@@ -1061,7 +1061,6 @@ impl Compilation {
           .values()
           .flat_map(|item| item.all_dependencies())
           .chain(self.global_entry.all_dependencies())
-          .copied()
           .collect(),
       )],
     )?;
@@ -1109,7 +1108,7 @@ impl Compilation {
       .module_graph_modules()
       .par_iter()
       .flat_map(|(_, mgm)| &mgm.all_dependencies)
-      .filter_map(|dependency_id| module_graph.dependency_by_id(dependency_id))
+      .filter_map(|dependency_id| module_graph.dependency_by_id(*dependency_id))
       .filter_map(|dependency| dependency.get_diagnostics(&module_graph))
       .flat_map(|ds| ds)
       .collect();

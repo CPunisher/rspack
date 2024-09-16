@@ -69,7 +69,7 @@ impl<'parser> JavascriptParser<'parser> {
       )));
     let dependencies = extract_deps(call_expr, create_dependency);
     if self.build_meta.esm && !call_expr.args.is_empty() {
-      let dependency_ids = dependencies.iter().map(|dep| *dep.id()).collect::<Vec<_>>();
+      let dependency_ids = dependencies.iter().map(|dep| dep.id()).collect::<Vec<_>>();
       let callback_arg = call_expr.args.get(1);
       let range = if let Some(callback) = callback_arg {
         Into::<RealDependencyLocation>::into(callback.span())

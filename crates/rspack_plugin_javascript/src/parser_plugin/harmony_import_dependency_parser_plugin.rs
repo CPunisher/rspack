@@ -149,7 +149,7 @@ impl JavascriptParserPlugin for HarmonyImportDependencyParserPlugin {
       parser.properties_in_destructuring.remove(&ident.sym),
       settings.attributes,
     );
-    let dep_id = *dep.id();
+    let dep_id = dep.id();
     parser.dependencies.push(Box::new(dep));
 
     InnerGraphPlugin::on_usage(
@@ -158,7 +158,7 @@ impl JavascriptParserPlugin for HarmonyImportDependencyParserPlugin {
         if let Some(dep) = parser
           .dependencies
           .iter_mut()
-          .find(|dep| dep.id() == &dep_id)
+          .find(|dep| dep.id() == dep_id)
         {
           dep.set_used_by_exports(used_by_exports);
         }
@@ -216,7 +216,7 @@ impl JavascriptParserPlugin for HarmonyImportDependencyParserPlugin {
       None,
       settings.attributes,
     );
-    let dep_id = *dep.id();
+    let dep_id = dep.id();
     parser.dependencies.push(Box::new(dep));
 
     InnerGraphPlugin::on_usage(
@@ -225,7 +225,7 @@ impl JavascriptParserPlugin for HarmonyImportDependencyParserPlugin {
         if let Some(dep) = parser
           .dependencies
           .iter_mut()
-          .find(|dep| dep.id() == &dep_id)
+          .find(|dep| dep.id() == dep_id)
         {
           dep.set_used_by_exports(used_by_exports);
         }
@@ -280,7 +280,7 @@ impl JavascriptParserPlugin for HarmonyImportDependencyParserPlugin {
       None,
       settings.attributes,
     );
-    let dep_id = *dep.id();
+    let dep_id = dep.id();
     parser.dependencies.push(Box::new(dep));
 
     InnerGraphPlugin::on_usage(
@@ -289,7 +289,7 @@ impl JavascriptParserPlugin for HarmonyImportDependencyParserPlugin {
         if let Some(dep) = parser
           .dependencies
           .iter_mut()
-          .find(|dep| dep.id() == &dep_id)
+          .find(|dep| dep.id() == dep_id)
         {
           dep.set_used_by_exports(used_by_exports);
         }

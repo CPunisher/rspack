@@ -23,8 +23,8 @@ impl ImportMetaHotAcceptDependency {
 }
 
 impl Dependency for ImportMetaHotAcceptDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -73,7 +73,7 @@ impl DependencyTemplate for ImportMetaHotAcceptDependency {
       self.range.end,
       module_id(
         code_generatable_context.compilation,
-        &self.id,
+        self.id,
         &self.request,
         self.weak(),
       )

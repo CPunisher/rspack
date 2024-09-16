@@ -35,8 +35,8 @@ impl AsDependencyTemplate for LazyCompilationDependency {}
 impl AsContextDependency for LazyCompilationDependency {}
 
 impl Dependency for LazyCompilationDependency {
-  fn id(&self) -> &rspack_core::DependencyId {
-    &self.id
+  fn id(&self) -> rspack_core::DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

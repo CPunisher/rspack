@@ -72,8 +72,8 @@ impl CommonJsExportsDependency {
 }
 
 impl Dependency for CommonJsExportsDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

@@ -207,13 +207,12 @@ async fn finish_modules(&self, compilation: &mut Compilation) -> Result<()> {
 
     for block_id in block_ids {
       let block = mg.block_by_id(block_id).expect("should have block");
-      for block_dep_id in block.get_dependencies() {
+      for &block_dep_id in block.get_dependencies() {
         let block_dep = mg.dependency_by_id(block_dep_id);
         if let Some(block_dep) = block_dep {
           if let Some(import_dependency) = block_dep.as_any().downcast_ref::<ImportDependency>() {
-            let import_dep_connection = connections
-              .iter()
-              .find(|c| c.dependency_id == *block_dep_id);
+            let import_dep_connection =
+              connections.iter().find(|c| c.dependency_id == block_dep_id);
 
             // Try find the connection with a import dependency pointing to an external module.
             // If found, remove the connection and add a new import dependency to performs the external module ID replacement.
@@ -248,9 +247,9 @@ async fn finish_modules(&self, compilation: &mut Compilation) -> Result<()> {
     for (block_id, dep, new_dep, connection_id) in deps_to_replace.iter() {
       let block = mg.block_by_id_mut(block_id).expect("should have block");
       let dep_id = dep.id();
-      block.remove_dependency_id(*dep_id);
+      block.remove_dependency_id(dep_id);
       let boxed_dep = Box::new(new_dep.clone()) as Box<dyn rspack_core::Dependency>;
-      block.add_dependency_id(*new_dep.id());
+      block.add_dependency_id(new_dep.id());
       mg.add_dependency(boxed_dep);
       mg.revoke_connection(connection_id, true);
     }

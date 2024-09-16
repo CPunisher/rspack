@@ -142,7 +142,7 @@ impl Task<MakeTaskContext> for BuildResultTask {
                             current_block: Option<Box<AsyncDependenciesBlock>>|
      -> Vec<Box<AsyncDependenciesBlock>> {
       for dependency in dependencies {
-        let dependency_id = *dependency.id();
+        let dependency_id = dependency.id();
         if current_block.is_none() {
           module.add_dependency_id(dependency_id);
         }

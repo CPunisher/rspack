@@ -39,8 +39,8 @@ impl ImportContextDependency {
 }
 
 impl Dependency for ImportContextDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

@@ -35,8 +35,8 @@ impl WorkerDependency {
 }
 
 impl Dependency for WorkerDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -91,7 +91,7 @@ impl DependencyTemplate for WorkerDependency {
     } = code_generatable_context;
     let chunk_id = compilation
       .get_module_graph()
-      .get_parent_block(&self.id)
+      .get_parent_block(self.id)
       .and_then(|block| {
         compilation
           .chunk_graph

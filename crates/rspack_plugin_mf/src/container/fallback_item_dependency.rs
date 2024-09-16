@@ -19,8 +19,8 @@ impl FallbackItemDependency {
 }
 
 impl Dependency for FallbackItemDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

@@ -110,7 +110,6 @@ pub fn make_module_graph(
         .values()
         .flat_map(|item| item.all_dependencies())
         .chain(compilation.global_entry.all_dependencies())
-        .copied()
         .collect(),
     ));
   }

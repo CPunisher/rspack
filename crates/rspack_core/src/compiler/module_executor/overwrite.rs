@@ -41,7 +41,7 @@ impl Task<MakeTaskContext> for OverwriteTask {
     // factorize result task
     if let Some(factorize_result_task) = origin_task.as_any().downcast_ref::<FactorizeResultTask>()
     {
-      let dep_id = *factorize_result_task.dependencies[0].id();
+      let dep_id = factorize_result_task.dependencies[0].id();
       let original_module_identifier = factorize_result_task.original_module_identifier;
       let res = origin_task.sync_run(context)?;
       if res.is_empty() {
@@ -53,7 +53,7 @@ impl Task<MakeTaskContext> for OverwriteTask {
     }
     // add task
     if let Some(add_task) = origin_task.as_any().downcast_ref::<AddTask>() {
-      let dep_id = *add_task.dependencies[0].id();
+      let dep_id = add_task.dependencies[0].id();
       let original_module_identifier = add_task.original_module_identifier;
       let target_module_identifier = add_task.module.identifier();
 

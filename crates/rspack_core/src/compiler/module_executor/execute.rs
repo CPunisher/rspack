@@ -75,7 +75,7 @@ impl Task<MakeTaskContext> for ExecuteTask {
 
     let mg = compilation.get_module_graph_mut();
     let entry_module_identifier = mg
-      .get_module_by_dependency_id(&entry_dep_id)
+      .get_module_by_dependency_id(entry_dep_id)
       .expect("should have module")
       .identifier();
     let mut queue = vec![entry_module_identifier];

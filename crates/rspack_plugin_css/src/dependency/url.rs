@@ -52,8 +52,8 @@ impl CssUrlDependency {
 }
 
 impl Dependency for CssUrlDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

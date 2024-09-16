@@ -90,7 +90,7 @@ fn set_resolved_module(
   for dependency in dependencies {
     module_graph.set_resolved_module(
       original_module_identifier,
-      *dependency.id(),
+      dependency.id(),
       module_identifier,
     )?;
     module_graph.add_dependency(dependency);

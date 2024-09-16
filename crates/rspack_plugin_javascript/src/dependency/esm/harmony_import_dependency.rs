@@ -372,8 +372,8 @@ pub fn harmony_import_dependency_get_linking_error<T: ModuleDependency>(
 }
 
 impl Dependency for HarmonyImportSideEffectDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn loc(&self) -> Option<String> {
@@ -406,7 +406,7 @@ impl Dependency for HarmonyImportSideEffectDependency {
     module_chain: &mut IdentifierSet,
   ) -> ConnectionState {
     if let Some(module) = module_graph
-      .module_identifier_by_dependency_id(&self.id)
+      .module_identifier_by_dependency_id(self.id)
       .and_then(|module_identifier| module_graph.module_by_identifier(module_identifier))
     {
       module.get_side_effects_connection_state(module_graph, module_chain)
@@ -494,7 +494,7 @@ impl DependencyTemplate for HarmonyImportSideEffectDependency {
     } = code_generatable_context;
     let module_graph = compilation.get_module_graph();
     if let Some(scope) = concatenation_scope {
-      let module = module_graph.get_module_by_dependency_id(&self.id);
+      let module = module_graph.get_module_by_dependency_id(self.id);
       if module.is_some_and(|m| scope.is_module_in_scope(&m.identifier())) {
         return;
       }

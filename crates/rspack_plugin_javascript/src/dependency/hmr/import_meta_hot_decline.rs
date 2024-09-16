@@ -23,8 +23,8 @@ impl ImportMetaHotDeclineDependency {
 }
 
 impl Dependency for ImportMetaHotDeclineDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -73,7 +73,7 @@ impl DependencyTemplate for ImportMetaHotDeclineDependency {
       self.range.end,
       module_id(
         code_generatable_context.compilation,
-        &self.id,
+        self.id,
         &self.request,
         self.weak(),
       )

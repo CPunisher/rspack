@@ -42,8 +42,8 @@ impl CommonJsFullRequireDependency {
 }
 
 impl Dependency for CommonJsFullRequireDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -69,7 +69,7 @@ impl Dependency for CommonJsFullRequireDependency {
   ) -> Vec<ExtendedReferencedExport> {
     if self.is_call
       && module_graph
-        .module_graph_module_by_dependency_id(&self.id)
+        .module_graph_module_by_dependency_id(self.id)
         .and_then(|mgm| module_graph.module_by_identifier(&mgm.module_identifier))
         .map(|m| m.get_exports_type(module_graph, false))
         .is_some_and(|t| !matches!(t, ExportsType::Namespace))
@@ -126,10 +126,10 @@ impl DependencyTemplate for CommonJsFullRequireDependency {
     let mut require_expr = format!(
       r#"{}({})"#,
       RuntimeGlobals::REQUIRE,
-      module_id(compilation, &self.id, &self.request, false)
+      module_id(compilation, self.id, &self.request, false)
     );
 
-    if let Some(imported_module) = module_graph.module_graph_module_by_dependency_id(&self.id) {
+    if let Some(imported_module) = module_graph.module_graph_module_by_dependency_id(self.id) {
       let used = module_graph
         .get_exports_info(&imported_module.module_identifier)
         .get_used_name(&module_graph, *runtime, UsedName::Vec(self.names.clone()));

@@ -29,8 +29,8 @@ impl RequireResolveContextDependency {
 }
 
 impl Dependency for RequireResolveContextDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

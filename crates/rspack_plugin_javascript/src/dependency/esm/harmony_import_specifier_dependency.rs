@@ -124,8 +124,8 @@ impl DependencyTemplate for HarmonyImportSpecifierDependency {
     } = code_generatable_context;
     let module_graph = compilation.get_module_graph();
     // Only available when module factorization is successful.
-    let reference_mgm = module_graph.module_graph_module_by_dependency_id(&self.id);
-    let connection = module_graph.connection_by_dependency(&self.id);
+    let reference_mgm = module_graph.module_graph_module_by_dependency_id(self.id);
+    let connection = module_graph.connection_by_dependency(self.id);
     let is_target_active = if let Some(con) = connection {
       con.is_target_active(&module_graph, *runtime)
     } else {
@@ -149,10 +149,10 @@ impl DependencyTemplate for HarmonyImportSpecifierDependency {
     }
 
     let ids = self.get_ids(&module_graph);
-    let import_var = compilation.get_import_var(&self.id);
+    let import_var = compilation.get_import_var(self.id);
 
     let export_expr = if let Some(scope) = concatenation_scope
-      && let Some(con) = module_graph.connection_by_dependency(&self.id)
+      && let Some(con) = module_graph.connection_by_dependency(self.id)
       && scope.is_module_in_scope(con.module_identifier())
     {
       if ids.is_empty() {
@@ -192,7 +192,7 @@ impl DependencyTemplate for HarmonyImportSpecifierDependency {
         &self.request,
         &import_var,
         ids,
-        &self.id,
+        self.id,
         self.call,
         !self.direct_import,
         Some(self.shorthand || self.asi_safe),
@@ -220,8 +220,8 @@ impl DependencyTemplate for HarmonyImportSpecifierDependency {
 }
 
 impl Dependency for HarmonyImportSpecifierDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn loc(&self) -> Option<String> {
@@ -272,7 +272,7 @@ impl Dependency for HarmonyImportSpecifierDependency {
 
   #[tracing::instrument(skip_all)]
   fn get_diagnostics(&self, module_graph: &ModuleGraph) -> Option<Vec<Diagnostic>> {
-    let module = module_graph.get_parent_module(&self.id)?;
+    let module = module_graph.get_parent_module(self.id)?;
     let module = module_graph.module_by_identifier(module)?;
     if let Some(should_error) = self
       .export_presence_mode
@@ -306,9 +306,9 @@ impl Dependency for HarmonyImportSpecifierDependency {
       && id == "default"
     {
       let parent_module = module_graph
-        .get_parent_module(&self.id)
+        .get_parent_module(self.id)
         .expect("should have parent module");
-      let exports_type = get_exports_type(module_graph, &self.id, parent_module);
+      let exports_type = get_exports_type(module_graph, self.id, parent_module);
       match exports_type {
         ExportsType::DefaultOnly | ExportsType::DefaultWithNamed => {
           if ids.len() == 1 {

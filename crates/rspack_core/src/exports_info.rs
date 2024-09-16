@@ -1441,7 +1441,7 @@ impl ExportInfo {
     let mut target = FindTargetRetValue {
       module: *raw_target
         .connection
-        .and_then(|dep_id| mg.connection_by_dependency(&dep_id))
+        .and_then(|dep_id| mg.connection_by_dependency(dep_id))
         .expect("should have connection")
         .module_identifier(),
       export: raw_target.export.clone(),
@@ -1710,7 +1710,7 @@ fn resolve_target(
       module: *input_target
         .connection
         .as_ref()
-        .and_then(|dep_id| mg.connection_by_dependency(dep_id))
+        .and_then(|&dep_id| mg.connection_by_dependency(dep_id))
         .expect("should have connection")
         .module_identifier(),
       export: input_target.export,
@@ -1809,7 +1809,7 @@ impl DependencyConditionFn for UsedByExportsDependencyCondition {
     mg: &ModuleGraph,
   ) -> ConnectionState {
     let module_identifier = mg
-      .get_parent_module(&self.dependency_id)
+      .get_parent_module(self.dependency_id)
       .expect("should have parent module");
     let exports_info = mg.get_exports_info(module_identifier);
     for export_name in self.used_by_exports.iter() {

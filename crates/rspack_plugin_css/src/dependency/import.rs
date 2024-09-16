@@ -22,8 +22,8 @@ impl CssImportDependency {
 }
 
 impl Dependency for CssImportDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

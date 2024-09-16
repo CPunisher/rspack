@@ -55,7 +55,7 @@ impl JavaScriptParserAndGenerator {
       .block_by_id(block_id)
       .expect("should have block");
     //    let block = block_id.expect_get(compilation);
-    block.get_dependencies().iter().for_each(|dependency_id| {
+    block.get_dependencies().iter().for_each(|&dependency_id| {
       self.source_dependency(compilation, dependency_id, source, context)
     });
     block
@@ -67,7 +67,7 @@ impl JavaScriptParserAndGenerator {
   fn source_dependency(
     &self,
     compilation: &Compilation,
-    dependency_id: &DependencyId,
+    dependency_id: DependencyId,
     source: &mut TemplateReplaceSource,
     context: &mut TemplateContext,
   ) {
@@ -310,7 +310,7 @@ impl ParserAndGenerator for JavaScriptParserAndGenerator {
         data: generate_context.data,
       };
 
-      module.get_dependencies().iter().for_each(|dependency_id| {
+      module.get_dependencies().iter().for_each(|&dependency_id| {
         self.source_dependency(compilation, dependency_id, &mut source, &mut context)
       });
 

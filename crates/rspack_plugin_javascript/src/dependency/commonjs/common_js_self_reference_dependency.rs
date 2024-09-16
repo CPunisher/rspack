@@ -29,8 +29,8 @@ impl CommonJsSelfReferenceDependency {
 }
 
 impl Dependency for CommonJsSelfReferenceDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

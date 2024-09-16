@@ -17,7 +17,7 @@ impl DependencyDTO {
 
   fn dependency<'a>(&self, module_graph: &'a ModuleGraph) -> &'a dyn Dependency {
     module_graph
-      .dependency_by_id(&self.dependency_id)
+      .dependency_by_id(self.dependency_id)
       .unwrap_or_else(|| panic!("Failed to get dependency by id = {:?}", &self.dependency_id))
       .as_ref()
   }

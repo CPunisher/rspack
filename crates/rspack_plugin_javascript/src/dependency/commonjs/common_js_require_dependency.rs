@@ -31,8 +31,8 @@ impl CommonJsRequireDependency {
 }
 
 impl Dependency for CommonJsRequireDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn loc(&self) -> Option<String> {
@@ -85,7 +85,7 @@ impl DependencyTemplate for CommonJsRequireDependency {
       self.range_expr.end - 1,
       module_id(
         code_generatable_context.compilation,
-        &self.id,
+        self.id,
         &self.request,
         false,
       )

@@ -80,7 +80,7 @@ impl HarmonyExportImportedSpecifierDependency {
   // Because it is shared by multiply HarmonyExportImportedSpecifierDependency, so put it to `BuildInfo`
   pub fn active_exports<'a>(&self, module_graph: &'a ModuleGraph) -> &'a HashSet<Atom> {
     let build_info = module_graph
-      .get_parent_module(&self.id)
+      .get_parent_module(self.id)
       .and_then(|ident| module_graph.module_by_identifier(ident))
       .expect("should have mgm")
       .build_info()
@@ -94,7 +94,7 @@ impl HarmonyExportImportedSpecifierDependency {
     module_graph: &'a ModuleGraph,
   ) -> Option<&'a Vec<DependencyId>> {
     let module = module_graph
-      .get_parent_module(&self.id)
+      .get_parent_module(self.id)
       .and_then(|ident| module_graph.module_by_identifier(ident));
 
     if let Some(module) = module {
@@ -110,7 +110,7 @@ impl HarmonyExportImportedSpecifierDependency {
     &self,
     name: Option<Atom>,
     module_graph: &ModuleGraph,
-    id: &DependencyId,
+    id: DependencyId,
     runtime: Option<&RuntimeSpec>,
   ) -> ExportMode {
     let imported_module_identifier = if let Some(imported_module_identifier) =
@@ -285,7 +285,7 @@ impl HarmonyExportImportedSpecifierDependency {
     let exports_info = exports_info.unwrap_or_else(|| {
       // https://github.com/webpack/webpack/blob/ac7e531436b0d47cd88451f497cdfd0dad41535d/lib/dependencies/HarmonyExportImportedSpecifierDependency.js#L425
       let parent_module = module_graph
-        .get_parent_module(&self.id)
+        .get_parent_module(self.id)
         .expect("should have parent module");
       module_graph.get_exports_info(parent_module)
     });
@@ -477,7 +477,7 @@ impl HarmonyExportImportedSpecifierDependency {
     let mut fragments = vec![];
     let mg = &compilation.get_module_graph();
     let module_identifier = module.identifier();
-    let import_var = compilation.get_import_var(&self.id);
+    let import_var = compilation.get_import_var(self.id);
     match mode.ty {
       ExportModeType::Missing | ExportModeType::EmptyStar => {
         fragments.push(
@@ -591,7 +591,7 @@ impl HarmonyExportImportedSpecifierDependency {
       }
       ExportModeType::NormalReexport => {
         let imported_module = mg
-          .module_identifier_by_dependency_id(&self.id)
+          .module_identifier_by_dependency_id(self.id)
           .expect("should have imported module identifier");
         for item in mode.items.into_iter().flatten() {
           let NormalReexportItem {
@@ -864,7 +864,7 @@ impl HarmonyExportImportedSpecifierDependency {
         (Severity::Warning, "HarmonyLinkingWarning")
       };
       let parent_module_identifier = module_graph
-        .get_parent_module(&self.id)
+        .get_parent_module(self.id)
         .expect("should have parent module for dependency");
       let mut diagnostic = if let Some(span) = self.range()
         && let Some(parent_module) = module_graph.module_by_identifier(parent_module_identifier)
@@ -905,7 +905,7 @@ impl HarmonyExportImportedSpecifierDependency {
         &potential_conflicts.names[potential_conflicts.names_slice
           ..potential_conflicts.dependency_indices[potential_conflicts.dependency_index]],
       );
-      let imported_module = module_graph.get_module_by_dependency_id(&self.id)?;
+      let imported_module = module_graph.get_module_by_dependency_id(self.id)?;
       let exports_info = module_graph.get_exports_info(&imported_module.identifier());
       let mut conflicts: IndexMap<&str, Vec<&Atom>, BuildHasherDefault<FxHasher>> =
         IndexMap::default();
@@ -932,7 +932,7 @@ impl HarmonyExportImportedSpecifierDependency {
         let dependencies = if let Some(all_star_exports) = self.all_star_exports(module_graph) {
           all_star_exports
             .iter()
-            .filter_map(|id| module_graph.dependency_by_id(id))
+            .filter_map(|&id| module_graph.dependency_by_id(id))
             .filter_map(|dep| dep.as_module_dependency())
             .collect::<Vec<_>>()
         } else {
@@ -1013,7 +1013,7 @@ impl DependencyTemplate for HarmonyExportImportedSpecifierDependency {
     } = code_generatable_context;
 
     let module_graph = compilation.get_module_graph();
-    let mode = self.get_mode(self.name.clone(), &module_graph, &self.id, *runtime);
+    let mode = self.get_mode(self.name.clone(), &module_graph, self.id, *runtime);
 
     if let Some(ref mut scope) = concatenation_scope {
       if matches!(mode.ty, ExportModeType::ReexportUndefined) {
@@ -1046,8 +1046,8 @@ impl DependencyTemplate for HarmonyExportImportedSpecifierDependency {
 }
 
 impl Dependency for HarmonyExportImportedSpecifierDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn loc(&self) -> Option<String> {
@@ -1072,7 +1072,7 @@ impl Dependency for HarmonyExportImportedSpecifierDependency {
 
   #[allow(clippy::unwrap_in_result)]
   fn get_exports(&self, mg: &ModuleGraph) -> Option<ExportsSpec> {
-    let mode = self.get_mode(self.name.clone(), mg, &self.id, None);
+    let mode = self.get_mode(self.name.clone(), mg, self.id, None);
     // dbg!(&self.request(), &mode);
     match mode.ty {
       ExportModeType::Missing => None,
@@ -1245,7 +1245,7 @@ impl Dependency for HarmonyExportImportedSpecifierDependency {
 
   #[tracing::instrument(skip_all)]
   fn get_diagnostics(&self, module_graph: &ModuleGraph) -> Option<Vec<Diagnostic>> {
-    let module = module_graph.get_parent_module(&self.id)?;
+    let module = module_graph.get_parent_module(self.id)?;
     let module = module_graph.module_by_identifier(module)?;
     let ids = self.get_ids(module_graph);
     if let Some(should_error) = self
@@ -1281,7 +1281,7 @@ impl Dependency for HarmonyExportImportedSpecifierDependency {
     module_graph: &ModuleGraph,
     runtime: Option<&RuntimeSpec>,
   ) -> Vec<ExtendedReferencedExport> {
-    let mode = self.get_mode(self.name.clone(), module_graph, &self.id, runtime);
+    let mode = self.get_mode(self.name.clone(), module_graph, self.id, runtime);
     // dbg!(&mode);
     match mode.ty {
       ExportModeType::Missing
@@ -1354,7 +1354,7 @@ impl DependencyConditionFn for HarmonyExportImportedSpecifierDependencyCondition
     module_graph: &ModuleGraph,
   ) -> ConnectionState {
     let dep = module_graph
-      .dependency_by_id(&self.0)
+      .dependency_by_id(self.0)
       .expect("should have dependency");
     let down_casted_dep = dep
       .downcast_ref::<HarmonyExportImportedSpecifierDependency>()
@@ -1362,7 +1362,7 @@ impl DependencyConditionFn for HarmonyExportImportedSpecifierDependencyCondition
     let mode = down_casted_dep.get_mode(
       down_casted_dep.name.clone(),
       module_graph,
-      &down_casted_dep.id,
+      down_casted_dep.id,
       runtime,
     );
     ConnectionState::Bool(!matches!(
@@ -1489,7 +1489,7 @@ fn determine_export_assignments<'a>(
   let mut dependency_indices =
     Vec::with_capacity(dependencies.len() + usize::from(additional_dependency.is_some()));
 
-  for dependency in dependencies.iter().chain(additional_dependency.iter()) {
+  for &dependency in dependencies.iter().chain(additional_dependency.iter()) {
     if let Some(module_identifier) = module_graph.module_identifier_by_dependency_id(dependency) {
       let exports_info = module_graph.get_exports_info(module_identifier);
       for export_info in exports_info.ordered_exports(module_graph) {

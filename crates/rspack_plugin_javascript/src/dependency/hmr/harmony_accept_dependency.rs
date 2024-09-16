@@ -47,7 +47,7 @@ impl DependencyTemplate for HarmonyAcceptDependency {
 
     let mut content = String::default();
     let module_graph = compilation.get_module_graph();
-    self.dependency_ids.iter().for_each(|id| {
+    self.dependency_ids.iter().for_each(|&id| {
       let dependency = module_graph.dependency_by_id(id);
       let runtime_condition =
         match dependency.and_then(|dep| module_graph.get_module_by_dependency_id(dep.id())) {

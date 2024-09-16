@@ -35,8 +35,8 @@ impl ContainerEntryDependency {
 }
 
 impl Dependency for ContainerEntryDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

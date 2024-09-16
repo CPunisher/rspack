@@ -39,8 +39,8 @@ impl CommonJsRequireContextDependency {
 }
 
 impl Dependency for CommonJsRequireContextDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

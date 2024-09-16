@@ -42,8 +42,8 @@ impl ModernModuleImportDependency {
 }
 
 impl Dependency for ModernModuleImportDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn resource_identifier(&self) -> Option<&str> {

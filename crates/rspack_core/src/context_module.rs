@@ -193,7 +193,7 @@ impl ContextModule {
 
   fn get_fake_map(
     &self,
-    dependencies: impl IntoIterator<Item = &DependencyId>,
+    dependencies: impl IntoIterator<Item = DependencyId>,
     compilation: &Compilation,
   ) -> FakeMapValue {
     let dependencies = dependencies.into_iter();
@@ -292,7 +292,7 @@ impl ContextModule {
 
   fn get_user_request_map(
     &self,
-    dependencies: impl IntoIterator<Item = &DependencyId>,
+    dependencies: impl IntoIterator<Item = DependencyId>,
     compilation: &Compilation,
   ) -> FxIndexMap<String, Option<String>> {
     let module_graph = compilation.get_module_graph();
@@ -417,7 +417,7 @@ impl ContextModule {
       .filter_map(|b| module_graph.block_by_id(b));
     let block_and_first_dependency_list = blocks
       .clone()
-      .filter_map(|b| b.get_dependencies().first().map(|d| (b, d)));
+      .filter_map(|b| b.get_dependencies().first().map(|d| (b, *d)));
     let first_dependencies = block_and_first_dependency_list.clone().map(|(_, d)| d);
     let mut has_multiple_or_no_chunks = false;
     let mut has_no_chunk = true;
@@ -578,8 +578,8 @@ impl ContextModule {
       compilation,
       "lazy-once context",
     );
-    let map = self.get_user_request_map(dependencies, compilation);
-    let fake_map = self.get_fake_map(dependencies, compilation);
+    let map = self.get_user_request_map(dependencies.into_iter().copied(), compilation);
+    let fake_map = self.get_fake_map(dependencies.into_iter().copied(), compilation);
     let then_function = if !matches!(
       fake_map,
       FakeMapValue::Bit(FakeNamespaceObjectMode::NAMESPACE)
@@ -627,8 +627,8 @@ impl ContextModule {
 
   fn get_async_weak_source(&self, compilation: &Compilation) -> BoxSource {
     let dependencies = self.get_dependencies();
-    let map = self.get_user_request_map(dependencies, compilation);
-    let fake_map = self.get_fake_map(dependencies, compilation);
+    let map = self.get_user_request_map(dependencies.into_iter().copied(), compilation);
+    let fake_map = self.get_fake_map(dependencies.into_iter().copied(), compilation);
     let return_module_object = self.get_return_module_object_source(&fake_map, true, "fakeMap[id]");
     let source = formatdoc! {r#"
       var map = {map};
@@ -673,8 +673,8 @@ impl ContextModule {
 
   fn get_sync_weak_source(&self, compilation: &Compilation) -> BoxSource {
     let dependencies = self.get_dependencies();
-    let map = self.get_user_request_map(dependencies, compilation);
-    let fake_map = self.get_fake_map(dependencies, compilation);
+    let map = self.get_user_request_map(dependencies.into_iter().copied(), compilation);
+    let fake_map = self.get_fake_map(dependencies.into_iter().copied(), compilation);
     let return_module_object = self.get_return_module_object_source(&fake_map, true, "fakeMap[id]");
     let source = formatdoc! {r#"
       var map = {map};
@@ -714,8 +714,8 @@ impl ContextModule {
 
   fn get_eager_source(&self, compilation: &Compilation) -> BoxSource {
     let dependencies = self.get_dependencies();
-    let map = self.get_user_request_map(dependencies, compilation);
-    let fake_map = self.get_fake_map(dependencies, compilation);
+    let map = self.get_user_request_map(dependencies.into_iter().copied(), compilation);
+    let fake_map = self.get_fake_map(dependencies.into_iter().copied(), compilation);
     let then_function = if !matches!(
       fake_map,
       FakeMapValue::Bit(FakeNamespaceObjectMode::NAMESPACE)
@@ -765,8 +765,8 @@ impl ContextModule {
 
   fn get_sync_source(&self, compilation: &Compilation) -> BoxSource {
     let dependencies = self.get_dependencies();
-    let map = self.get_user_request_map(dependencies, compilation);
-    let fake_map = self.get_fake_map(dependencies, compilation);
+    let map = self.get_user_request_map(dependencies.into_iter().copied(), compilation);
+    let fake_map = self.get_fake_map(dependencies.into_iter().copied(), compilation);
     let return_module_object =
       self.get_return_module_object_source(&fake_map, false, "fakeMap[id]");
     let source = formatdoc! {r#"
@@ -944,7 +944,7 @@ impl Module for ContextModule {
         }
         _ => {}
       }
-      let fake_map = self.get_fake_map(all_deps.iter(), compilation);
+      let fake_map = self.get_fake_map(all_deps.iter().copied(), compilation);
       if !matches!(fake_map, FakeMapValue::Bit(bit) if bit == FakeNamespaceObjectMode::NAMESPACE) {
         code_generation_result
           .runtime_requirements

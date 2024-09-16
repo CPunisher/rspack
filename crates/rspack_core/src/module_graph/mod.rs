@@ -422,7 +422,7 @@ impl<'a> ModuleGraph<'a> {
         None => continue,
       };
       let dependency = self
-        .dependency_by_id(&connection.dependency_id)
+        .dependency_by_id(connection.dependency_id)
         .expect("should have dependency");
       if filter_connection(connection, dependency) {
         let connection = self
@@ -462,7 +462,7 @@ impl<'a> ModuleGraph<'a> {
         None => continue,
       };
       let dependency = self
-        .dependency_by_id(&connection.dependency_id)
+        .dependency_by_id(connection.dependency_id)
         .expect("should have dependency");
       // the inactive connection should not be updated
       if filter_connection(connection, dependency) && (connection.conditional || connection.active)
@@ -617,19 +617,19 @@ impl<'a> ModuleGraph<'a> {
       .insert(dependency_id, Some(parents));
   }
 
-  pub fn get_parent_module(&self, dependency_id: &DependencyId) -> Option<&ModuleIdentifier> {
+  pub fn get_parent_module(&self, dependency_id: DependencyId) -> Option<&ModuleIdentifier> {
     self
-      .loop_partials(|p| p.dependency_id_to_parents.get(dependency_id))?
+      .loop_partials(|p| p.dependency_id_to_parents.get(&dependency_id))?
       .as_ref()
       .map(|p| &p.module)
   }
 
   pub fn get_parent_block(
     &self,
-    dependency_id: &DependencyId,
+    dependency_id: DependencyId,
   ) -> Option<&AsyncDependenciesBlockIdentifier> {
     self
-      .loop_partials(|p| p.dependency_id_to_parents.get(dependency_id))?
+      .loop_partials(|p| p.dependency_id_to_parents.get(&dependency_id))?
       .as_ref()
       .map(|p| &p.block)?
       .as_ref()
@@ -702,34 +702,34 @@ impl<'a> ModuleGraph<'a> {
     };
     active_partial
       .dependencies
-      .insert(*dependency.id(), Some(dependency));
+      .insert(dependency.id(), Some(dependency));
   }
 
-  pub fn dependency_by_id(&self, dependency_id: &DependencyId) -> Option<&BoxDependency> {
+  pub fn dependency_by_id(&self, dependency_id: DependencyId) -> Option<&BoxDependency> {
     self
-      .loop_partials(|p| p.dependencies.get(dependency_id))?
+      .loop_partials(|p| p.dependencies.get(&dependency_id))?
       .as_ref()
   }
 
   /// Uniquely identify a module by its dependency
   pub fn module_graph_module_by_dependency_id(
     &self,
-    id: &DependencyId,
+    id: DependencyId,
   ) -> Option<&ModuleGraphModule> {
     self
       .module_identifier_by_dependency_id(id)
       .and_then(|module_identifier| self.module_graph_module_by_identifier(module_identifier))
   }
 
-  pub fn module_identifier_by_dependency_id(&self, id: &DependencyId) -> Option<&ModuleIdentifier> {
+  pub fn module_identifier_by_dependency_id(&self, id: DependencyId) -> Option<&ModuleIdentifier> {
     self
-      .loop_partials(|p| p.dependency_id_to_module_identifier.get(id))?
+      .loop_partials(|p| p.dependency_id_to_module_identifier.get(&id))?
       .as_ref()
   }
 
-  pub fn get_module_by_dependency_id(&self, dependency_id: &DependencyId) -> Option<&BoxModule> {
+  pub fn get_module_by_dependency_id(&self, dependency_id: DependencyId) -> Option<&BoxModule> {
     if let Some(Some(ref module_id)) =
-      self.loop_partials(|p| p.dependency_id_to_module_identifier.get(dependency_id))
+      self.loop_partials(|p| p.dependency_id_to_module_identifier.get(&dependency_id))
     {
       self.loop_partials(|p| p.modules.get(module_id))?.as_ref()
     } else {
@@ -799,7 +799,7 @@ impl<'a> ModuleGraph<'a> {
     module_identifier: ModuleIdentifier,
   ) -> Result<()> {
     let dependency = self
-      .dependency_by_id(&dependency_id)
+      .dependency_by_id(dependency_id)
       .expect("should have dependency");
     let is_module_dependency =
       dependency.as_module_dependency().is_some() || dependency.as_context_dependency().is_some();
@@ -853,9 +853,9 @@ impl<'a> ModuleGraph<'a> {
     }
   }
 
-  pub fn connection_id_by_dependency_id(&self, dep_id: &DependencyId) -> Option<&ConnectionId> {
+  pub fn connection_id_by_dependency_id(&self, dep_id: DependencyId) -> Option<&ConnectionId> {
     self
-      .loop_partials(|p| p.dependency_id_to_connection_id.get(dep_id))?
+      .loop_partials(|p| p.dependency_id_to_connection_id.get(&dep_id))?
       .as_ref()
   }
   /// Uniquely identify a module graph module by its module's identifier and return the aliased reference
@@ -894,7 +894,7 @@ impl<'a> ModuleGraph<'a> {
   /// Uniquely identify a connection by a given dependency
   pub fn connection_by_dependency(
     &self,
-    dependency_id: &DependencyId,
+    dependency_id: DependencyId,
   ) -> Option<&ModuleGraphConnection> {
     if let Some(connection_id) = self.connection_id_by_dependency_id(dependency_id) {
       self
@@ -914,6 +914,7 @@ impl<'a> ModuleGraph<'a> {
       .map(|m| {
         m.all_dependencies
           .iter()
+          .copied()
           .filter_map(|dep_id| self.connection_id_by_dependency_id(dep_id))
           .collect()
       })
@@ -966,7 +967,7 @@ impl<'a> ModuleGraph<'a> {
     let mut has_connections = false;
     for connection in self.get_incoming_connections(module_id).iter() {
       let Some(dependency) = self
-        .dependency_by_id(&connection.dependency_id)
+        .dependency_by_id(connection.dependency_id)
         .and_then(|dep| dep.as_module_dependency())
       else {
         return false;
@@ -1052,7 +1053,7 @@ impl<'a> ModuleGraph<'a> {
 
   pub fn update_module(
     &mut self,
-    dep_id: &DependencyId,
+    dep_id: DependencyId,
     module_id: &ModuleIdentifier,
   ) -> Option<ConnectionId> {
     let connection_id = *self

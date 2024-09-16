@@ -193,7 +193,7 @@ impl Module for LazyCompilationProxyModule {
     let chunk_graph = &compilation.chunk_graph;
 
     let client_module = module_graph
-      .module_identifier_by_dependency_id(&client_dep_id)
+      .module_identifier_by_dependency_id(client_dep_id)
       .expect("should have module");
 
     let block = self.blocks.first();
@@ -219,7 +219,7 @@ impl Module for LazyCompilationProxyModule {
 
       let dep_id = block.get_dependencies()[0];
       let module = module_graph
-        .module_identifier_by_dependency_id(&dep_id)
+        .module_identifier_by_dependency_id(dep_id)
         .expect("should have module");
 
       let mut template_ctx = TemplateContext {
@@ -250,7 +250,7 @@ impl Module for LazyCompilationProxyModule {
         ",
         module_namespace_promise(
           &mut template_ctx,
-          &dep_id,
+          dep_id,
           Some(block_id),
           &self.resource,
           "import()",

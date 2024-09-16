@@ -93,8 +93,8 @@ impl DependencyTemplate for ModuleDecoratorDependency {
 impl AsContextDependency for ModuleDecoratorDependency {}
 
 impl Dependency for ModuleDecoratorDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn resource_identifier(&self) -> Option<&str> {

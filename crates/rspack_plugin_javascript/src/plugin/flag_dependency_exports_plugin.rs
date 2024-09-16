@@ -115,13 +115,13 @@ impl<'a> FlagDependencyExportsState<'a> {
     block: &B,
     exports_specs_from_dependencies: &mut IndexMap<DependencyId, ExportsSpec>,
   ) -> Option<()> {
-    for dep_id in block.get_dependencies().iter() {
+    for &dep_id in block.get_dependencies().iter() {
       let dep = self
         .mg
         .dependency_by_id(dep_id)
         .expect("should have dependency");
       self.process_dependency(
-        *dep_id,
+        dep_id,
         dep.get_exports(self.mg),
         exports_specs_from_dependencies,
       );

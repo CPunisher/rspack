@@ -30,8 +30,8 @@ impl StaticExportsDependency {
 }
 
 impl Dependency for StaticExportsDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn dependency_type(&self) -> &DependencyType {

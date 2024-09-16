@@ -67,7 +67,7 @@ impl CommonJsExportRequireDependency {
 
     let mut exports_info = Some(
       mg.get_exports_info(
-        mg.get_parent_module(&self.id)
+        mg.get_parent_module(self.id)
           .expect("Should get parent module"),
       ),
     );
@@ -160,8 +160,8 @@ impl CommonJsExportRequireDependency {
 }
 
 impl Dependency for CommonJsExportRequireDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -179,7 +179,7 @@ impl Dependency for CommonJsExportRequireDependency {
       let Some(name) = self.names.first() else {
         unreachable!();
       };
-      let from = mg.connection_by_dependency(&self.id)?;
+      let from = mg.connection_by_dependency(self.id)?;
       Some(ExportsSpec {
         exports: ExportsOfExportsSpec::Array(vec![ExportNameOrSpec::ExportSpec(ExportSpec {
           name: name.to_owned(),
@@ -196,7 +196,7 @@ impl Dependency for CommonJsExportRequireDependency {
         ..Default::default()
       })
     } else if self.names.is_empty() {
-      let from = mg.connection_by_dependency(&self.id)?;
+      let from = mg.connection_by_dependency(self.id)?;
       if let Some(reexport_info) = self.get_star_reexports(mg, None, from.module_identifier()) {
         Some(ExportsSpec {
           exports: ExportsOfExportsSpec::Array(
@@ -273,7 +273,7 @@ impl Dependency for CommonJsExportRequireDependency {
       return get_full_result();
     }
     let mut exports_info = mg.get_exports_info(
-      mg.get_parent_module(&self.id)
+      mg.get_parent_module(self.id)
         .expect("Can not get parent module"),
     );
 
@@ -383,12 +383,12 @@ impl DependencyTemplate for CommonJsExportRequireDependency {
     let mut require_expr = module_raw(
       compilation,
       runtime_requirements,
-      &self.id,
+      self.id,
       &self.request,
       false,
     );
 
-    if let Some(imported_module) = mg.get_module_by_dependency_id(&self.id) {
+    if let Some(imported_module) = mg.get_module_by_dependency_id(self.id) {
       let ids = self.get_ids(mg);
       if let Some(used_imported) = mg
         .get_exports_info(&imported_module.identifier())

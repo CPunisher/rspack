@@ -25,8 +25,8 @@ impl AsDependencyTemplate for LoaderImportDependency {}
 impl AsContextDependency for LoaderImportDependency {}
 
 impl Dependency for LoaderImportDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

@@ -43,7 +43,7 @@ async fn finish_modules(&self, compilation: &mut Compilation) -> Result<()> {
       .get_incoming_connections(&module)
       .iter()
       .filter(|con| {
-        if let Some(dep) = module_graph.dependency_by_id(&con.dependency_id) {
+        if let Some(dep) = module_graph.dependency_by_id(con.dependency_id) {
           matches!(
             dep.dependency_type(),
             DependencyType::EsmImport | DependencyType::EsmExport

@@ -282,7 +282,7 @@ impl ParserAndGenerator for CssParserAndGenerator {
               from.to_string(),
               RealDependencyLocation::new(range.start, range.end),
             );
-            dep_id = Some(*dep.id());
+            dep_id = Some(dep.id());
             dependencies.push(Box::new(dep));
           }
           let exports = self.exports.get_or_insert_default();
@@ -419,9 +419,9 @@ impl ParserAndGenerator for CssParserAndGenerator {
               let escaped = escape_css(n, false);
               v.iter()
                 .map(|v| {
-                  let composed = &v.id;
+                  let composed = v.id;
 
-                  if let Some(composed) = composed {
+                  if let Some(&composed) = composed.as_ref() {
                     let mg = compilation.get_module_graph();
                     let module = mg
                       .get_module_by_dependency_id(composed)
@@ -461,7 +461,7 @@ impl ParserAndGenerator for CssParserAndGenerator {
           )));
         }
 
-        module.get_dependencies().iter().for_each(|id| {
+        module.get_dependencies().iter().for_each(|&id| {
           if let Some(dependency) = compilation
             .get_module_graph()
             .dependency_by_id(id)

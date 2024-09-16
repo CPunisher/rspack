@@ -41,8 +41,8 @@ impl ImportEagerDependency {
 }
 
 impl Dependency for ImportEagerDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn resource_identifier(&self) -> Option<&str> {
@@ -70,7 +70,7 @@ impl Dependency for ImportEagerDependency {
     module_graph: &rspack_core::ModuleGraph,
     _runtime: Option<&rspack_core::RuntimeSpec>,
   ) -> Vec<rspack_core::ExtendedReferencedExport> {
-    create_import_dependency_referenced_exports(&self.id, &self.referenced_exports, module_graph)
+    create_import_dependency_referenced_exports(self.id, &self.referenced_exports, module_graph)
   }
 
   fn could_affect_referencing_module(&self) -> rspack_core::AffectType {
@@ -99,13 +99,13 @@ impl DependencyTemplate for ImportEagerDependency {
     code_generatable_context: &mut TemplateContext,
   ) {
     let module_graph = code_generatable_context.compilation.get_module_graph();
-    let block = module_graph.get_parent_block(&self.id);
+    let block = module_graph.get_parent_block(self.id);
     source.replace(
       self.range.start,
       self.range.end,
       module_namespace_promise(
         code_generatable_context,
-        &self.id,
+        self.id,
         block,
         &self.request,
         self.dependency_type().as_str(),

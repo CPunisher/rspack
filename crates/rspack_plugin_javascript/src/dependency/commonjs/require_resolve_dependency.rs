@@ -26,8 +26,8 @@ impl RequireResolveDependency {
 }
 
 impl Dependency for RequireResolveDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -88,7 +88,7 @@ impl DependencyTemplate for RequireResolveDependency {
       self.range.end,
       module_id(
         code_generatable_context.compilation,
-        &self.id,
+        self.id,
         &self.request,
         self.weak,
       )

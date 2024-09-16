@@ -25,7 +25,7 @@ impl DependencyId {
   /// * current dependency id is not belongs to `HarmonyImportSpecifierDependency` or  `HarmonyExportImportedSpecifierDependency`
   /// * current id is not in `ModuleGraph`
   pub fn get_ids(&self, mg: &ModuleGraph) -> Vec<Atom> {
-    let dep = mg.dependency_by_id(self).expect("should have dep");
+    let dep = mg.dependency_by_id(*self).expect("should have dep");
     dep.get_ids(mg)
   }
 }

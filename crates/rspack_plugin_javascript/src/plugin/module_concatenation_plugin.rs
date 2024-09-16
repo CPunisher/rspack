@@ -160,7 +160,7 @@ impl ModuleConcatenationPlugin {
   ) -> IdentifierIndexSet {
     let mut set = IdentifierIndexSet::default();
     let module = mg.module_by_identifier(&mi).expect("should have module");
-    for d in module.get_dependencies() {
+    for &d in module.get_dependencies() {
       let dep = mg.dependency_by_id(d).expect("should have dependency");
       let is_harmony_import_like = is_harmony_dep_like(dep);
       if !is_harmony_import_like {
@@ -391,7 +391,7 @@ impl ModuleConcatenationPlugin {
       let selected: Vec<_> = connections
         .iter()
         .filter(|&connection| {
-          if let Some(dep) = module_graph.dependency_by_id(&connection.dependency_id) {
+          if let Some(dep) = module_graph.dependency_by_id(connection.dependency_id) {
             !is_harmony_dep_like(dep)
           } else {
             false
@@ -417,7 +417,7 @@ impl ModuleConcatenationPlugin {
             let mut names = connections
               .iter()
               .filter_map(|item| {
-                let dep = module_graph.dependency_by_id(&item.dependency_id)?;
+                let dep = module_graph.dependency_by_id(item.dependency_id)?;
                 Some(dep.dependency_type().to_string())
               })
               .collect::<Vec<_>>();
@@ -663,7 +663,7 @@ impl ModuleConcatenationPlugin {
       }
       module_graph.copy_outgoing_module_connections(m, &new_module.id(), |c, mg| {
         let dep = mg
-          .dependency_by_id(&c.dependency_id)
+          .dependency_by_id(c.dependency_id)
           .expect("should have dependency");
         c.original_module_identifier.as_ref() == Some(m)
           && !(is_harmony_dep_like(dep) && modules_set.contains(c.module_identifier()))

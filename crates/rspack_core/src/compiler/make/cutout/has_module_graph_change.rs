@@ -25,7 +25,7 @@ impl ModuleDeps {
     let deps = module.get_dependencies();
     let mut child_deps: IdentifierMap<HashSet<Atom>> = Default::default();
 
-    for dep_id in deps {
+    for &dep_id in deps {
       let dep = module_graph
         .dependency_by_id(dep_id)
         .expect("should have dependency");

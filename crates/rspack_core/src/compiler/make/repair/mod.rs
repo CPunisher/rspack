@@ -89,7 +89,7 @@ pub fn repair(
     .into_iter()
     .filter_map::<Box<dyn Task<MakeTaskContext>>, _>(|(id, parent_module_identifier)| {
       let dependency = module_graph
-        .dependency_by_id(&id)
+        .dependency_by_id(id)
         .expect("dependency not found");
       // filter module_dependency and context_dependency
       if dependency.as_module_dependency().is_none() && dependency.as_context_dependency().is_none()

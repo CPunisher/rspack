@@ -44,8 +44,8 @@ impl ContextElementDependency {
 }
 
 impl Dependency for ContextElementDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

@@ -21,8 +21,8 @@ impl RequireHeaderDependency {
 }
 
 impl Dependency for RequireHeaderDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn loc(&self) -> Option<String> {

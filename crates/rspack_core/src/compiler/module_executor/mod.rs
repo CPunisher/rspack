@@ -183,7 +183,7 @@ impl ModuleExecutor {
           request.clone(),
           original_module_context.unwrap_or(Context::from("")),
         );
-        let dep_id = *dep.id();
+        let dep_id = dep.id();
         v.insert(dep_id);
         (EntryParam::Entry(Box::new(dep)), dep_id)
       }

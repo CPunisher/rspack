@@ -57,8 +57,8 @@ impl PureExpressionDependency {
 }
 
 impl Dependency for PureExpressionDependency {
-  fn id(&self) -> &rspack_core::DependencyId {
-    &self.id
+  fn id(&self) -> rspack_core::DependencyId {
+    self.id
   }
 
   fn set_used_by_exports(&mut self, used_by_exports: Option<UsedByExports>) {

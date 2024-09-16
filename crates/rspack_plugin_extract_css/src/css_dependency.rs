@@ -83,8 +83,8 @@ impl Dependency for CssDependency {
     Some(&self.resource_identifier)
   }
 
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn dependency_type(&self) -> &rspack_core::DependencyType {

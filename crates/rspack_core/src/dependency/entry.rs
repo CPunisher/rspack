@@ -35,8 +35,8 @@ impl EntryDependency {
 }
 
 impl Dependency for EntryDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

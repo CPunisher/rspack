@@ -19,8 +19,8 @@ impl RequireResolveHeaderDependency {
 }
 
 impl Dependency for RequireResolveHeaderDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn loc(&self) -> Option<String> {

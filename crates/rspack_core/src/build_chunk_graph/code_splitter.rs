@@ -381,7 +381,7 @@ impl<'me> CodeSplitter<'me> {
       .concat();
       let requests = dependencies
         .iter()
-        .map(|dep_id| {
+        .map(|&dep_id| {
           let module_graph = self.compilation.get_module_graph();
           let dep = module_graph.dependency_by_id(dep_id);
           let mut request = None;
@@ -395,7 +395,7 @@ impl<'me> CodeSplitter<'me> {
         .collect::<Vec<_>>();
       let module_identifiers = dependencies
         .iter()
-        .filter_map(|dep| {
+        .filter_map(|&dep| {
           self
             .compilation
             .get_module_graph()
@@ -497,13 +497,13 @@ impl<'me> CodeSplitter<'me> {
         .global_entry
         .include_dependencies
         .iter()
-        .filter_map(|dep| module_graph.module_identifier_by_dependency_id(dep))
+        .filter_map(|&dep| module_graph.module_identifier_by_dependency_id(dep))
         .copied()
         .sorted_unstable();
       let included_modules = entry_data
         .include_dependencies
         .iter()
-        .filter_map(|dep| module_graph.module_identifier_by_dependency_id(dep))
+        .filter_map(|&dep| module_graph.module_identifier_by_dependency_id(dep))
         .copied()
         .sorted_unstable();
       let included_modules = global_included_modules.chain(included_modules);
@@ -836,7 +836,7 @@ Or do you want to use the entrypoints '{name}' and '{runtime}' independently on 
       let blocks = block
         .get_dependencies()
         .iter()
-        .filter_map(|dep| module_graph.module_identifier_by_dependency_id(dep))
+        .filter_map(|&dep| module_graph.module_identifier_by_dependency_id(dep))
         .copied()
         .collect::<Vec<_>>();
 
@@ -1508,7 +1508,7 @@ Or do you want to use the entrypoints '{name}' and '{runtime}' independently on 
           .expect("should have connection");
 
         let dep = module_graph
-          .dependency_by_id(&conn.dependency_id)
+          .dependency_by_id(conn.dependency_id)
           .expect("should have dependency");
 
         (dep, conn_id)

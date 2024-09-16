@@ -751,7 +751,7 @@ fn optimize_incoming_connection(
   let connection = module_graph
     .connection_by_connection_id(&connection_id)
     .expect("should have connection");
-  let Some(dep) = module_graph.dependency_by_id(&connection.dependency_id) else {
+  let Some(dep) = module_graph.dependency_by_id(connection.dependency_id) else {
     return;
   };
   let is_reexport = dep
@@ -796,7 +796,7 @@ fn do_optimize_incoming_connection(
     .expect("should have connection");
   let dep_id = connection.dependency_id;
   let dep = module_graph
-    .dependency_by_id(&dep_id)
+    .dependency_by_id(dep_id)
     .expect("should have dep");
   if let Some(name) = dep
     .downcast_ref::<HarmonyExportImportedSpecifierDependency>()
@@ -813,7 +813,7 @@ fn do_optimize_incoming_connection(
       }),
       Arc::new(
         move |target: &ResolvedExportInfoTarget, mg: &mut ModuleGraph| {
-          mg.update_module(&dep_id, &target.module)?;
+          mg.update_module(dep_id, &target.module)?;
           // TODO: Explain https://github.com/webpack/webpack/blob/ac7e531436b0d47cd88451f497cdfd0dad41535d/lib/optimize/SideEffectsFlagPlugin.js#L303-L306
           let ids = dep_id.get_ids(mg);
           let processed_ids = target
@@ -835,7 +835,7 @@ fn do_optimize_incoming_connection(
     }) = target
       && let Some(&connection_id) = compilation
         .get_module_graph()
-        .connection_id_by_dependency_id(&connection)
+        .connection_id_by_dependency_id(connection)
     {
       new_connections
         .entry(module)
@@ -864,7 +864,7 @@ fn do_optimize_incoming_connection(
     let Some(target) = target else {
       return;
     };
-    let Some(connection_id) = module_graph.update_module(&dep_id, &target.module) else {
+    let Some(connection_id) = module_graph.update_module(dep_id, &target.module) else {
       return;
     };
     new_connections

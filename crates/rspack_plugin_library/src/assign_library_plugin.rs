@@ -378,7 +378,7 @@ async fn finish_modules(&self, compilation: &mut Compilation) -> Result<()> {
     let module_graph = compilation.get_module_graph();
     let module_of_last_dep = dependencies
       .last()
-      .and_then(|dep| module_graph.get_module_by_dependency_id(dep));
+      .and_then(|&dep| module_graph.get_module_by_dependency_id(dep));
     let Some(module_of_last_dep) = module_of_last_dep else {
       continue;
     };

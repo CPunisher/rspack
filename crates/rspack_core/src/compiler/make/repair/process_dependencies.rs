@@ -30,7 +30,7 @@ impl Task<MakeTaskContext> for ProcessDependenciesTask {
 
     for dependency_id in dependencies {
       let dependency = module_graph
-        .dependency_by_id(&dependency_id)
+        .dependency_by_id(dependency_id)
         .expect("should have dependency");
       // FIXME: now only module/context dependency can put into resolve queue.
       // FIXME: should align webpack

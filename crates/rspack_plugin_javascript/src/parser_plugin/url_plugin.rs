@@ -63,7 +63,7 @@ impl JavascriptParserPlugin for URLPlugin {
         (start, end),
         self.relative,
       );
-      let dep_id = *dep.id();
+      let dep_id = dep.id();
       parser.dependencies.push(Box::new(dep));
       InnerGraphPlugin::on_usage(
         parser,
@@ -71,7 +71,7 @@ impl JavascriptParserPlugin for URLPlugin {
           if let Some(dep) = parser
             .dependencies
             .iter_mut()
-            .find(|dep| dep.id() == &dep_id)
+            .find(|dep| dep.id() == dep_id)
           {
             dep.set_used_by_exports(used_by_exports);
           }

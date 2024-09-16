@@ -23,8 +23,8 @@ impl ModuleHotDeclineDependency {
 }
 
 impl Dependency for ModuleHotDeclineDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -73,7 +73,7 @@ impl DependencyTemplate for ModuleHotDeclineDependency {
       self.range.end,
       module_id(
         code_generatable_context.compilation,
-        &self.id,
+        self.id,
         &self.request,
         self.weak(),
       )

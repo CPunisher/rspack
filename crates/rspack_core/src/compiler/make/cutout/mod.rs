@@ -97,7 +97,7 @@ impl Cutout {
           for item in deps {
             let (dependency_id, _) = &item;
             // add deps bindings module to force_build_modules
-            if let Some(mid) = module_graph.module_identifier_by_dependency_id(dependency_id) {
+            if let Some(mid) = module_graph.module_identifier_by_dependency_id(*dependency_id) {
               force_build_modules.insert(*mid);
             }
             force_build_deps.insert(item);
@@ -132,7 +132,7 @@ impl Cutout {
     let mut module_graph = artifact.get_module_graph_mut();
     for dep_id in remove_entry_deps {
       // connection may have been deleted by revoke module
-      if let Some(con) = module_graph.connection_by_dependency(&dep_id) {
+      if let Some(con) = module_graph.connection_by_dependency(dep_id) {
         self
           .clean_isolated_module
           .add_need_check_module(*con.module_identifier());

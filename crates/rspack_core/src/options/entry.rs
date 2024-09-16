@@ -25,10 +25,11 @@ pub struct EntryData {
 }
 
 impl EntryData {
-  pub fn all_dependencies(&self) -> impl Iterator<Item = &DependencyId> {
+  pub fn all_dependencies(&self) -> impl Iterator<Item = DependencyId> + '_ {
     self
       .dependencies
       .iter()
-      .chain(self.include_dependencies.iter())
+      .copied()
+      .chain(self.include_dependencies.iter().copied())
   }
 }

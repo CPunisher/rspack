@@ -177,7 +177,7 @@ impl Module for ProvideSharedModule {
       .insert(RuntimeGlobals::INITIALIZE_SHARING);
     let factory = if self.eager {
       sync_module_factory(
-        &self.get_dependencies()[0],
+        self.get_dependencies()[0],
         &self.request,
         compilation,
         &mut code_generation_result.runtime_requirements,

@@ -36,7 +36,7 @@ pub trait Dependency:
   + Sync
   + Debug
 {
-  fn id(&self) -> &DependencyId;
+  fn id(&self) -> DependencyId;
 
   fn category(&self) -> &DependencyCategory {
     &DependencyCategory::Unknown

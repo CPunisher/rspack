@@ -19,8 +19,8 @@ impl ProvideForSharedDependency {
 }
 
 impl Dependency for ProvideForSharedDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn dependency_type(&self) -> &DependencyType {

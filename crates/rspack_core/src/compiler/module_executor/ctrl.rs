@@ -140,7 +140,7 @@ impl Task<MakeTaskContext> for CtrlTask {
         Event::ExecuteModule(param, execute_task) => {
           let dep_id = match &param {
             EntryParam::DependencyId(id, _) => *id,
-            EntryParam::Entry(dep) => *dep.id(),
+            EntryParam::Entry(dep) => dep.id(),
           };
           self.execute_task_map.insert(dep_id, execute_task);
           return Ok(vec![Box::new(EntryTask { param }), self]);
@@ -239,7 +239,7 @@ impl Task<MakeTaskContext> for FinishModuleTask {
         Event::ExecuteModule(param, execute_task) => {
           let dep_id = match &param {
             EntryParam::DependencyId(id, _) => *id,
-            EntryParam::Entry(dep) => *dep.id(),
+            EntryParam::Entry(dep) => dep.id(),
           };
           ctrl_task.execute_task_map.insert(dep_id, execute_task);
           res.push(Box::new(EntryTask { param }));

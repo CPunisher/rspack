@@ -568,9 +568,9 @@ impl Module for ConcatenatedModule {
       // populate dependencies
       for dep_id in module.get_dependencies().iter() {
         let dep = module_graph
-          .dependency_by_id(dep_id)
+          .dependency_by_id(*dep_id)
           .expect("should have dependency");
-        let module_id_of_dep = module_graph.module_identifier_by_dependency_id(dep_id);
+        let module_id_of_dep = module_graph.module_identifier_by_dependency_id(*dep_id);
         if !is_harmony_dep_like(dep) || !modules.contains(&module_id_of_dep) {
           self.dependencies.push(*dep_id);
         }
@@ -1558,7 +1558,7 @@ impl ConcatenatedModule {
         return;
       }
       let con_id = mg
-        .connection_id_by_dependency_id(&con.dependency_id)
+        .connection_id_by_dependency_id(con.dependency_id)
         .expect("should have dep id");
       list.push(ConcatenationEntry::External(ConcatenationEntryExternal {
         connection: *con_id,
@@ -1589,7 +1589,7 @@ impl ConcatenatedModule {
       .into_iter()
       .filter_map(|connection| {
         let dep = mg
-          .dependency_by_id(&connection.dependency_id)
+          .dependency_by_id(connection.dependency_id)
           .expect("should have dependency");
         if !is_harmony_dep_like(dep) {
           return None;

@@ -20,8 +20,8 @@ impl CssExportDependency {
 }
 
 impl Dependency for CssExportDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

@@ -100,7 +100,7 @@ pub fn export_from_import(
   request: &str,
   import_var: &str,
   mut export_name: Vec<Atom>,
-  id: &DependencyId,
+  id: DependencyId,
   is_call: bool,
   call_context: bool,
   asi_safe: Option<bool>,
@@ -252,7 +252,7 @@ pub fn export_from_import(
 
 pub fn get_exports_type(
   module_graph: &ModuleGraph,
-  id: &DependencyId,
+  id: DependencyId,
   parent_module: &ModuleIdentifier,
 ) -> ExportsType {
   let strict = module_graph
@@ -264,7 +264,7 @@ pub fn get_exports_type(
 
 pub fn get_exports_type_with_strict(
   module_graph: &ModuleGraph,
-  id: &DependencyId,
+  id: DependencyId,
   strict: bool,
 ) -> ExportsType {
   let module = module_graph
@@ -341,12 +341,7 @@ pub fn module_id_expr(
   )
 }
 
-pub fn module_id(
-  compilation: &Compilation,
-  id: &DependencyId,
-  request: &str,
-  weak: bool,
-) -> String {
+pub fn module_id(compilation: &Compilation, id: DependencyId, request: &str, weak: bool) -> String {
   if let Some(module_identifier) = compilation
     .get_module_graph()
     .module_identifier_by_dependency_id(id)
@@ -364,7 +359,7 @@ pub fn import_statement(
   module: &dyn Module,
   compilation: &Compilation,
   runtime_requirements: &mut RuntimeGlobals,
-  id: &DependencyId,
+  id: DependencyId,
   request: &str,
   update: bool, // whether a new variable should be created or the existing one updated
 ) -> (String, String) {
@@ -405,7 +400,7 @@ pub fn import_statement(
 
 pub fn module_namespace_promise(
   code_generatable_context: &mut TemplateContext,
-  dep_id: &DependencyId,
+  dep_id: DependencyId,
   block: Option<&AsyncDependenciesBlockIdentifier>,
   request: &str,
   message: &str,
@@ -640,7 +635,7 @@ pub fn block_promise(
 pub fn module_raw(
   compilation: &Compilation,
   runtime_requirements: &mut RuntimeGlobals,
-  id: &DependencyId,
+  id: DependencyId,
   request: &str,
   weak: bool,
 ) -> String {
@@ -713,7 +708,7 @@ pub fn basic_function(environment: &Environment, args: &str, body: &str) -> Stri
 }
 
 pub fn sync_module_factory(
-  dep: &DependencyId,
+  dep: DependencyId,
   request: &str,
   compilation: &Compilation,
   runtime_requirements: &mut RuntimeGlobals,
@@ -740,7 +735,7 @@ pub fn async_module_factory(
   let ensure_chunk = block_promise(Some(block_id), runtime_requirements, compilation, "");
   let factory = returning_function(
     &compilation.options.output.environment,
-    &module_raw(compilation, runtime_requirements, &dep, request, false),
+    &module_raw(compilation, runtime_requirements, dep, request, false),
     "",
   );
   returning_function(

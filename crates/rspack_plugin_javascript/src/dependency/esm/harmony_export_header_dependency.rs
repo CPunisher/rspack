@@ -25,8 +25,8 @@ impl HarmonyExportHeaderDependency {
 }
 
 impl Dependency for HarmonyExportHeaderDependency {
-  fn id(&self) -> &rspack_core::DependencyId {
-    &self.id
+  fn id(&self) -> rspack_core::DependencyId {
+    self.id
   }
 
   fn loc(&self) -> Option<String> {

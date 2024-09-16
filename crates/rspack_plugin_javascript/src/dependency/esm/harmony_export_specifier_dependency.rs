@@ -28,8 +28,8 @@ impl HarmonyExportSpecifierDependency {
 }
 
 impl Dependency for HarmonyExportSpecifierDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn loc(&self) -> Option<String> {

@@ -22,8 +22,8 @@ impl CreateScriptUrlDependency {
 }
 
 impl Dependency for CreateScriptUrlDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

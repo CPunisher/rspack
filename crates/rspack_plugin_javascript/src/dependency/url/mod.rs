@@ -35,8 +35,8 @@ impl URLDependency {
 }
 
 impl Dependency for URLDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -97,7 +97,7 @@ impl DependencyTemplate for URLDependency {
           "/* asset import */ new {}({}({}))",
           RuntimeGlobals::RELATIVE_URL,
           RuntimeGlobals::REQUIRE,
-          module_id(compilation, &self.id, &self.request, false),
+          module_id(compilation, self.id, &self.request, false),
         )
         .as_str(),
         None,
@@ -110,7 +110,7 @@ impl DependencyTemplate for URLDependency {
         format!(
           "/* asset import */{}({}), {}",
           RuntimeGlobals::REQUIRE,
-          module_id(compilation, &self.id, &self.request, false),
+          module_id(compilation, self.id, &self.request, false),
           RuntimeGlobals::BASE_URI
         )
         .as_str(),

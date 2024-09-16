@@ -183,7 +183,7 @@ fn compute_affected_modules_with_module_graph(
   ) -> AffectType {
     let mut affected = AffectType::False;
     for connection in connections {
-      let Some(dependency) = module_graph.dependency_by_id(&connection.dependency_id) else {
+      let Some(dependency) = module_graph.dependency_by_id(connection.dependency_id) else {
         continue;
       };
       match dependency.could_affect_referencing_module() {

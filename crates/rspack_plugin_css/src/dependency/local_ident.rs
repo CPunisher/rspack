@@ -29,8 +29,8 @@ impl CssLocalIdentDependency {
 }
 
 impl Dependency for CssLocalIdentDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {

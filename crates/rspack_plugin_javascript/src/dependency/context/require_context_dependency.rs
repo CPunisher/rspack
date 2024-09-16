@@ -31,8 +31,8 @@ impl RequireContextDependency {
 }
 
 impl Dependency for RequireContextDependency {
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn category(&self) -> &DependencyCategory {
@@ -97,7 +97,7 @@ impl DependencyTemplate for RequireContextDependency {
     let content = module_raw(
       compilation,
       runtime_requirements,
-      &self.id,
+      self.id,
       &self.options.request,
       self.optional,
     );

@@ -30,8 +30,8 @@ impl Dependency for WebpackIsIncludedDependency {
     &DependencyType::WebpackIsIncluded
   }
 
-  fn id(&self) -> &DependencyId {
-    &self.id
+  fn id(&self) -> DependencyId {
+    self.id
   }
 
   fn get_referenced_exports(
@@ -67,7 +67,7 @@ impl DependencyTemplate for WebpackIsIncludedDependency {
 
     let included = compilation
       .get_module_graph()
-      .connection_by_dependency(&self.id)
+      .connection_by_dependency(self.id)
       .map(|connection| {
         compilation
           .chunk_graph
