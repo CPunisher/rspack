@@ -82,15 +82,16 @@ impl TryFrom<RawLightningCssMinimizerRspackPluginOptions> for PluginOptions {
       remove_unused_local_idents: value.remove_unused_local_idents,
       minimizer_options: MinimizerOptions {
         error_recovery: value.minimizer_options.error_recovery,
-        targets: value
-          .minimizer_options
-          .targets
-          .map(|t| {
-            rspack_loader_lightningcss::lightningcss::targets::Browsers::from_browserslist(t)
-          })
-          .transpose()
-          .map_err(|e| rspack_error::error!("Failed to parse browserslist: {}", e))?
-          .flatten(),
+        targets: None,
+        // targets: value
+        //   .minimizer_options
+        //   .targets
+        //   .map(|t| {
+        //     rspack_loader_lightningcss::lightningcss::targets::Browsers::from_browserslist(t)
+        //   })
+        //   .transpose()
+        //   .map_err(|e| rspack_error::error!("Failed to parse browserslist: {}", e))?
+        //   .flatten(),
         include: value.minimizer_options.include,
         exclude: value.minimizer_options.exclude,
         // We should use `drafts` if it is present, otherwise use `draft`
