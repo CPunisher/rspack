@@ -68,16 +68,16 @@ fn parse_with_lexer(
     }
   };
 
-  #[cfg(debug_assertions)]
-  {
-    // Adjust stack to avoid stack overflow.
-    stacker::maybe_grow(
-      2 * 1024 * 1024, /* 2mb */
-      4 * 1024 * 1024, /* 4mb */
-      inner,
-    )
-  }
-  #[cfg(not(debug_assertions))]
+  // #[cfg(debug_assertions)]
+  // {
+  //   // Adjust stack to avoid stack overflow.
+  //   stacker::maybe_grow(
+  //     2 * 1024 * 1024, /* 2mb */
+  //     4 * 1024 * 1024, /* 4mb */
+  //     inner,
+  //   )
+  // }
+  // #[cfg(not(debug_assertions))]
   inner()
 }
 
