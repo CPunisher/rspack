@@ -67,12 +67,13 @@ impl TryFrom<RawConfig> for Config {
     Ok(Self {
       minify: value.minify,
       error_recovery: value.error_recovery,
-      targets: value
-        .targets
-        .map(lightningcss::targets::Browsers::from_browserslist)
-        .transpose()
-        .map_err(|err| rspack_error::error!("Failed to parse browserslist: {}", err))?
-        .flatten(),
+      targets: None,
+      // targets: value
+      //   .targets
+      //   .map(lightningcss::targets::Browsers::from_browserslist)
+      //   .transpose()
+      //   .map_err(|err| rspack_error::error!("Failed to parse browserslist: {}", err))?
+      //   .flatten(),
       include: value.include,
       exclude: value.exclude,
       // We should use `drafts` if it is present, otherwise use `draft`
