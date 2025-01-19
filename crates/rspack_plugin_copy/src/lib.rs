@@ -11,7 +11,7 @@ use std::{
 
 use dashmap::DashSet;
 use derive_more::Debug;
-use futures::future::BoxFuture;
+use futures::future::{join_all, BoxFuture};
 use glob::{MatchOptions, Pattern as GlobPattern};
 use regex::Regex;
 use rspack_core::{
@@ -19,7 +19,8 @@ use rspack_core::{
   AssetInfo, AssetInfoRelated, Compilation, CompilationAsset, CompilationLogger,
   CompilationProcessAssets, FilenameTemplate, Logger, PathData, Plugin,
 };
-use rspack_error::{Diagnostic, DiagnosticError, Error, ErrorExt, Result};
+use rspack_error::{Diagnostic, Error, Result};
+use rspack_fs::ReadableFileSystem;
 use rspack_hash::{HashDigest, HashFunction, HashSalt, RspackHash, RspackHashDigest};
 use rspack_hook::{plugin, plugin_hook};
 use rspack_paths::{AssertUtf8, Utf8Path, Utf8PathBuf};
@@ -266,14 +267,17 @@ impl CopyRspackPlugin {
     logger.debug(format!("reading '{}'...", absolute_filename));
     // TODO inputFileSystem
 
-    let source_vec = match tokio::fs::read(absolute_filename.clone()).await {
+    let source_vec = match rspack_fs::NativeFileSystem
+      .async_read(&absolute_filename)
+      .await
+    {
       Ok(data) => {
         logger.debug(format!("read '{}'...", absolute_filename));
 
         data
       }
       Err(e) => {
-        let e: Error = DiagnosticError::from(e.boxed()).into();
+        let e: Error = e.into();
         diagnostics
           .lock()
           .expect("failed to obtain lock of `diagnostics`")
@@ -350,10 +354,9 @@ impl CopyRspackPlugin {
     })
   }
 
-  fn run_patter(
+  async fn run_patter(
     compilation: &Compilation,
     pattern: &CopyPattern,
-    _index: usize,
     file_dependencies: &DashSet<PathBuf>,
     context_dependencies: &DashSet<PathBuf>,
     diagnostics: &Mutex<Vec<Diagnostic>>,
@@ -510,23 +513,21 @@ impl CopyRspackPlugin {
 
         let output_path = &compilation.options.output.path;
 
-        let copied_result = entries
-          .into_iter()
-          .map(|entry| async {
-            Self::analyze_every_entry(
-              entry,
-              pattern,
-              &context,
-              output_path,
-              from_type,
-              file_dependencies,
-              diagnostics,
-              compilation,
-              logger,
-            )
-            .await
-          })
-          .collect::<rspack_futures::FuturesResults<Option<RunPatternResult>>>();
+        let copied_result = join_all(entries.into_iter().map(|entry| async {
+          Self::analyze_every_entry(
+            entry,
+            pattern,
+            &context,
+            output_path,
+            from_type,
+            file_dependencies,
+            diagnostics,
+            compilation,
+            logger,
+          )
+          .await
+        }))
+        .await;
 
         if copied_result.is_empty() {
           if pattern.no_error_on_missing {
@@ -544,7 +545,7 @@ impl CopyRspackPlugin {
           return None;
         }
 
-        Some(copied_result.into_inner())
+        Some(copied_result)
       }
       Err(e) => {
         if pattern.no_error_on_missing {
@@ -586,22 +587,19 @@ async fn process_assets(&self, compilation: &mut Compilation) -> Result<()> {
   let context_dependencies = DashSet::default();
   let diagnostics = Mutex::new(Vec::new());
 
-  let mut copied_result: Vec<(i32, RunPatternResult)> = self
-    .patterns
-    .iter()
-    .enumerate()
-    .map(|(index, pattern)| {
+  let mut copied_result: Vec<(i32, RunPatternResult)> =
+    join_all(self.patterns.iter().enumerate().map(|(_, pattern)| async {
       CopyRspackPlugin::run_patter(
         compilation,
         pattern,
-        index,
         &file_dependencies,
         &context_dependencies,
         &diagnostics,
         &logger,
       )
-    })
-    .collect::<Vec<_>>()
+      .await
+    }))
+    .await
     .into_iter()
     .flatten()
     .flat_map(|item| {

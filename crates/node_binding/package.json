@@ -18,6 +18,7 @@
     "watch:debug": "node scripts/build.js --watch",
     "build:debug:x64": "cross-env RUST_TARGET=x86_64-apple-darwin node scripts/build.js",
     "build:debug:linux": "cross-env RUST_TARGET=x86_64-unknown-linux-gnu node scripts/build.js",
+    "build:debug:wasm": "cross-env RUST_TARGET=wasm32-wasip1-threads node scripts/build.js",
     "build:release": "node scripts/build.js --release",
     "watch:release": "node scripts/build.js --release --watch",
     "build:release:arm64": "cross-env RUST_TARGET=aarch64-apple-darwin node scripts/build.js --release",
@@ -40,6 +41,7 @@
   "repository": "web-infra-dev/rspack",
   "devDependencies": {
     "@napi-rs/cli": "3.0.0-alpha.65",
+    "emnapi": "^1.3.1",
     "typescript": "^5.7.2"
   },
   "napi": {

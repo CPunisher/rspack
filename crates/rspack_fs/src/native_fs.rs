@@ -13,7 +13,7 @@ use crate::{
 #[derive(Debug)]
 pub struct NativeFileSystem;
 
-#[cfg(feature = "tokio-fs")]
+#[cfg(not(target_family = "wasm"))]
 #[async_trait::async_trait]
 impl WritableFileSystem for NativeFileSystem {
   async fn create_dir(&self, dir: &Utf8Path) -> Result<()> {
@@ -57,7 +57,7 @@ impl WritableFileSystem for NativeFileSystem {
   }
 }
 
-#[cfg(not(feature = "tokio-fs"))]
+#[cfg(target_family = "wasm")]
 #[async_trait::async_trait]
 impl WritableFileSystem for NativeFileSystem {
   async fn create_dir(&self, dir: &Utf8Path) -> Result<()> {
@@ -102,7 +102,7 @@ impl WritableFileSystem for NativeFileSystem {
   }
 }
 
-#[cfg(feature = "tokio-fs")]
+#[cfg(not(target_family = "wasm"))]
 #[async_trait::async_trait]
 impl ReadableFileSystem for NativeFileSystem {
   fn read(&self, path: &Utf8Path) -> Result<Vec<u8>> {
@@ -129,7 +129,7 @@ impl ReadableFileSystem for NativeFileSystem {
   }
 }
 
-#[cfg(not(feature = "tokio-fs"))]
+#[cfg(target_family = "wasm")]
 #[async_trait::async_trait]
 impl ReadableFileSystem for NativeFileSystem {
   fn read(&self, path: &Utf8Path) -> Result<Vec<u8>> {
