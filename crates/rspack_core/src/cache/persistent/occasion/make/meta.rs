@@ -34,28 +34,31 @@ pub fn save_meta(
   make_failed_module: &IdentifierSet,
   storage: &Arc<dyn Storage>,
 ) {
-  let meta = MetaRef {
-    make_failed_dependencies,
-    make_failed_module,
-    next_dependencies_id: DEPENDENCY_ID.load(Relaxed),
-  };
-  storage.set(
-    SCOPE,
-    "default".as_bytes().to_vec(),
-    to_bytes(&meta, &()).expect("should to bytes success"),
-  );
+  panic!("Unsupported");
+
+  // let meta = MetaRef {
+  //   make_failed_dependencies,
+  //   make_failed_module,
+  //   next_dependencies_id: DEPENDENCY_ID.load(Relaxed),
+  // };
+  // storage.set(
+  //   SCOPE,
+  //   "default".as_bytes().to_vec(),
+  //   to_bytes(&meta, &()).expect("should to bytes success"),
+  // );
 }
 
 pub async fn recovery_meta(
   storage: &Arc<dyn Storage>,
 ) -> Result<(HashSet<BuildDependency>, IdentifierSet)> {
-  let Some((_, value)) = storage.load(SCOPE).await?.pop() else {
-    return Ok(Default::default());
-  };
-  let meta: Meta = from_bytes(&value, &()).expect("should from bytes success");
-  // TODO make dependency id to string like module id
-  if DEPENDENCY_ID.load(Relaxed) < meta.next_dependencies_id {
-    DEPENDENCY_ID.store(meta.next_dependencies_id, Relaxed);
-  }
-  Ok((meta.make_failed_dependencies, meta.make_failed_module))
+  panic!("Unsupported");
+  // let Some((_, value)) = storage.load(SCOPE).await?.pop() else {
+  //   return Ok(Default::default());
+  // };
+  // let meta: Meta = from_bytes(&value, &()).expect("should from bytes success");
+  // // TODO make dependency id to string like module id
+  // if DEPENDENCY_ID.load(Relaxed) < meta.next_dependencies_id {
+  //   DEPENDENCY_ID.store(meta.next_dependencies_id, Relaxed);
+  // }
+  // Ok((meta.make_failed_dependencies, meta.make_failed_module))
 }

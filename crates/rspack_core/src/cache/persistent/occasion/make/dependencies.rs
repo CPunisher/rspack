@@ -45,123 +45,125 @@ pub fn save_dependencies_info(
   build_dependencies: &FileCounter,
   storage: &Arc<dyn Storage>,
 ) {
-  let f = file_dependencies
-    .updated_files_count_info()
-    .map(|(path, count)| {
-      (
-        DependencyRef {
-          r#type: DepType::File,
-          path,
-        },
-        count,
-      )
-    });
+  panic!("Unsupported");
+  // let f = file_dependencies
+  //   .updated_files_count_info()
+  //   .map(|(path, count)| {
+  //     (
+  //       DependencyRef {
+  //         r#type: DepType::File,
+  //         path,
+  //       },
+  //       count,
+  //     )
+  //   });
 
-  let c = context_dependencies
-    .updated_files_count_info()
-    .map(|(path, count)| {
-      (
-        DependencyRef {
-          r#type: DepType::Context,
-          path,
-        },
-        count,
-      )
-    });
+  // let c = context_dependencies
+  //   .updated_files_count_info()
+  //   .map(|(path, count)| {
+  //     (
+  //       DependencyRef {
+  //         r#type: DepType::Context,
+  //         path,
+  //       },
+  //       count,
+  //     )
+  //   });
 
-  let m = missing_dependencies
-    .updated_files_count_info()
-    .map(|(path, count)| {
-      (
-        DependencyRef {
-          r#type: DepType::Missing,
-          path,
-        },
-        count,
-      )
-    });
+  // let m = missing_dependencies
+  //   .updated_files_count_info()
+  //   .map(|(path, count)| {
+  //     (
+  //       DependencyRef {
+  //         r#type: DepType::Missing,
+  //         path,
+  //       },
+  //       count,
+  //     )
+  //   });
 
-  let b = build_dependencies
-    .updated_files_count_info()
-    .map(|(path, count)| {
-      (
-        DependencyRef {
-          r#type: DepType::Build,
-          path,
-        },
-        count,
-      )
-    });
+  // let b = build_dependencies
+  //   .updated_files_count_info()
+  //   .map(|(path, count)| {
+  //     (
+  //       DependencyRef {
+  //         r#type: DepType::Build,
+  //         path,
+  //       },
+  //       count,
+  //     )
+  //   });
 
-  f.chain(c)
-    .chain(m)
-    .chain(b)
-    .par_bridge()
-    .for_each(|(dep_ref, count)| {
-      let dep_ref = to_bytes(&dep_ref, &()).expect("should to bytes success");
-      if count == 0 {
-        storage.remove(SCOPE, &dep_ref);
-      } else {
-        storage.set(SCOPE, dep_ref, count.to_ne_bytes().to_vec());
-      }
-    });
+  // f.chain(c)
+  //   .chain(m)
+  //   .chain(b)
+  //   .par_bridge()
+  //   .for_each(|(dep_ref, count)| {
+  //     let dep_ref = to_bytes(&dep_ref, &()).expect("should to bytes success");
+  //     if count == 0 {
+  //       storage.remove(SCOPE, &dep_ref);
+  //     } else {
+  //       storage.set(SCOPE, dep_ref, count.to_ne_bytes().to_vec());
+  //     }
+  //   });
 }
 
 pub async fn recovery_dependencies_info(
   storage: &Arc<dyn Storage>,
 ) -> Result<(FileCounter, FileCounter, FileCounter, FileCounter)> {
-  let file_dep = Mutex::new(HashMap::default());
-  let context_dep = Mutex::new(HashMap::default());
-  let missing_dep = Mutex::new(HashMap::default());
-  let build_dep = Mutex::new(HashMap::default());
-  storage
-    .load(SCOPE)
-    .await?
-    .into_par_iter()
-    .for_each(|(k, v)| {
-      let count = usize::from_ne_bytes(
-        v.as_ref()
-          .clone()
-          .try_into()
-          .expect("should parse count success"),
-      );
-      let Dependency { r#type, path } = from_bytes(&k, &()).expect("should from bytes success");
-      match r#type {
-        DepType::File => file_dep
-          .lock()
-          .expect("should get file dep")
-          .insert(path, count),
-        DepType::Context => context_dep
-          .lock()
-          .expect("should get context dep")
-          .insert(path, count),
-        DepType::Missing => missing_dep
-          .lock()
-          .expect("should get missing dep")
-          .insert(path, count),
-        DepType::Build => build_dep
-          .lock()
-          .expect("should get build dep")
-          .insert(path, count),
-      };
-    });
+  panic!("Unsupported");
+  // let file_dep = Mutex::new(HashMap::default());
+  // let context_dep = Mutex::new(HashMap::default());
+  // let missing_dep = Mutex::new(HashMap::default());
+  // let build_dep = Mutex::new(HashMap::default());
+  // storage
+  //   .load(SCOPE)
+  //   .await?
+  //   .into_par_iter()
+  //   .for_each(|(k, v)| {
+  //     let count = usize::from_ne_bytes(
+  //       v.as_ref()
+  //         .clone()
+  //         .try_into()
+  //         .expect("should parse count success"),
+  //     );
+  //     let Dependency { r#type, path } = from_bytes(&k, &()).expect("should from bytes success");
+  //     match r#type {
+  //       DepType::File => file_dep
+  //         .lock()
+  //         .expect("should get file dep")
+  //         .insert(path, count),
+  //       DepType::Context => context_dep
+  //         .lock()
+  //         .expect("should get context dep")
+  //         .insert(path, count),
+  //       DepType::Missing => missing_dep
+  //         .lock()
+  //         .expect("should get missing dep")
+  //         .insert(path, count),
+  //       DepType::Build => build_dep
+  //         .lock()
+  //         .expect("should get build dep")
+  //         .insert(path, count),
+  //     };
+  //   });
 
-  Ok((
-    FileCounter::new(file_dep.into_inner().expect("into_inner should be success")),
-    FileCounter::new(
-      context_dep
-        .into_inner()
-        .expect("into_inner should be success"),
-    ),
-    FileCounter::new(
-      missing_dep
-        .into_inner()
-        .expect("into_inner should be success"),
-    ),
-    FileCounter::new(
-      build_dep
-        .into_inner()
-        .expect("into_inner should be success"),
-    ),
-  ))
+  // Ok((
+  //   FileCounter::new(file_dep.into_inner().expect("into_inner should be success")),
+  //   FileCounter::new(
+  //     context_dep
+  //       .into_inner()
+  //       .expect("into_inner should be success"),
+  //   ),
+  //   FileCounter::new(
+  //     missing_dep
+  //       .into_inner()
+  //       .expect("into_inner should be success"),
+  //   ),
+  //   FileCounter::new(
+  //     build_dep
+  //       .into_inner()
+  //       .expect("into_inner should be success"),
+  //   ),
+  // ))
 }

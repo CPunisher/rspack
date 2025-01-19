@@ -40,38 +40,39 @@ impl Snapshot {
   }
 
   pub async fn add(&self, paths: impl Iterator<Item = &Path>) {
-    let default_strategy = StrategyHelper::compile_time();
-    let mut helper = StrategyHelper::new(self.fs.clone());
-    // TODO use multi thread
-    // TODO merge package version file
-    for path in paths {
-      let utf8_path = path.assert_utf8();
-      // check path exists
-      if self.fs.metadata(utf8_path).is_err() {
-        continue;
-      }
-      // TODO directory path should check all sub file
-      let path_str = utf8_path.as_str();
-      if self.options.is_immutable_path(path_str) {
-        continue;
-      }
-      if self.options.is_managed_path(path_str) {
-        if let Some(v) = helper.package_version(path).await {
-          self.storage.set(
-            SCOPE,
-            path.as_os_str().as_encoded_bytes().to_vec(),
-            to_bytes::<_, ()>(&v, &()).expect("should to bytes success"),
-          );
-          continue;
-        }
-      }
-      // compiler time
-      self.storage.set(
-        SCOPE,
-        path.as_os_str().as_encoded_bytes().to_vec(),
-        to_bytes::<_, ()>(&default_strategy, &()).expect("should to bytes success"),
-      );
-    }
+    panic!("Unsupported");
+    // let default_strategy = StrategyHelper::compile_time();
+    // let mut helper = StrategyHelper::new(self.fs.clone());
+    // // TODO use multi thread
+    // // TODO merge package version file
+    // for path in paths {
+    //   let utf8_path = path.assert_utf8();
+    //   // check path exists
+    //   if self.fs.metadata(utf8_path).is_err() {
+    //     continue;
+    //   }
+    //   // TODO directory path should check all sub file
+    //   let path_str = utf8_path.as_str();
+    //   if self.options.is_immutable_path(path_str) {
+    //     continue;
+    //   }
+    //   if self.options.is_managed_path(path_str) {
+    //     if let Some(v) = helper.package_version(path).await {
+    //       self.storage.set(
+    //         SCOPE,
+    //         path.as_os_str().as_encoded_bytes().to_vec(),
+    //         to_bytes::<_, ()>(&v, &()).expect("should to bytes success"),
+    //       );
+    //       continue;
+    //     }
+    //   }
+    //   // compiler time
+    //   self.storage.set(
+    //     SCOPE,
+    //     path.as_os_str().as_encoded_bytes().to_vec(),
+    //     to_bytes::<_, ()>(&default_strategy, &()).expect("should to bytes success"),
+    //   );
+    // }
   }
 
   pub fn remove(&self, paths: impl Iterator<Item = &Path>) {
@@ -83,26 +84,27 @@ impl Snapshot {
   }
 
   pub async fn calc_modified_paths(&self) -> Result<(HashSet<ArcPath>, HashSet<ArcPath>)> {
-    let mut helper = StrategyHelper::new(self.fs.clone());
-    let mut modified_path = HashSet::default();
-    let mut deleted_path = HashSet::default();
+    panic!("Unsupported");
+    // let mut helper = StrategyHelper::new(self.fs.clone());
+    // let mut modified_path = HashSet::default();
+    // let mut deleted_path = HashSet::default();
 
-    // TODO use multi thread
-    for (key, value) in self.storage.load(SCOPE).await? {
-      let path: ArcPath = Path::new(&*String::from_utf8_lossy(&key)).into();
-      let strategy: Strategy =
-        from_bytes::<Strategy, ()>(&value, &()).expect("should from bytes success");
-      match helper.validate(&path, &strategy).await {
-        ValidateResult::Modified => {
-          modified_path.insert(path);
-        }
-        ValidateResult::Deleted => {
-          deleted_path.insert(path);
-        }
-        ValidateResult::NoChanged => {}
-      }
-    }
-    Ok((modified_path, deleted_path))
+    // // TODO use multi thread
+    // for (key, value) in self.storage.load(SCOPE).await? {
+    //   let path: ArcPath = Path::new(&*String::from_utf8_lossy(&key)).into();
+    //   let strategy: Strategy =
+    //     from_bytes::<Strategy, ()>(&value, &()).expect("should from bytes success");
+    //   match helper.validate(&path, &strategy).await {
+    //     ValidateResult::Modified => {
+    //       modified_path.insert(path);
+    //     }
+    //     ValidateResult::Deleted => {
+    //       deleted_path.insert(path);
+    //     }
+    //     ValidateResult::NoChanged => {}
+    //   }
+    // }
+    // Ok((modified_path, deleted_path))
   }
 }
 

@@ -65,12 +65,20 @@ pub fn merge_from_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStr
   .into()
 }
 
+// #[proc_macro_attribute]
+// pub fn cacheable(
+//   args: proc_macro::TokenStream,
+//   tokens: proc_macro::TokenStream,
+// ) -> proc_macro::TokenStream {
+//   cacheable::cacheable(args, tokens)
+// }
+
 #[proc_macro_attribute]
 pub fn cacheable(
-  args: proc_macro::TokenStream,
+  _args: proc_macro::TokenStream,
   tokens: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-  cacheable::cacheable(args, tokens)
+  cacheable::disable_cacheable(tokens)
 }
 
 #[proc_macro_attribute]
@@ -81,18 +89,26 @@ pub fn disable_cacheable(
   cacheable::disable_cacheable(tokens)
 }
 
+// #[proc_macro_attribute]
+// pub fn cacheable_dyn(
+//   _args: proc_macro::TokenStream,
+//   tokens: proc_macro::TokenStream,
+// ) -> proc_macro::TokenStream {
+//   let input = syn::parse_macro_input!(tokens as syn::Item);
+
+//   match input {
+//     syn::Item::Trait(input) => cacheable_dyn::impl_trait(input),
+//     syn::Item::Impl(input) => cacheable_dyn::impl_impl(input),
+//     _ => panic!("expect Trait or Impl"),
+//   }
+// }
+
 #[proc_macro_attribute]
 pub fn cacheable_dyn(
   _args: proc_macro::TokenStream,
   tokens: proc_macro::TokenStream,
 ) -> proc_macro::TokenStream {
-  let input = syn::parse_macro_input!(tokens as syn::Item);
-
-  match input {
-    syn::Item::Trait(input) => cacheable_dyn::impl_trait(input),
-    syn::Item::Impl(input) => cacheable_dyn::impl_impl(input),
-    _ => panic!("expect Trait or Impl"),
-  }
+  cacheable_dyn::disable_cacheable_dyn(tokens)
 }
 
 #[proc_macro_attribute]
