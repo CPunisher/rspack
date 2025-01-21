@@ -212,6 +212,25 @@ switch (platform) {
     throw new Error(`Unsupported OS: ${platform}, architecture: ${arch}`)
 }
 
+if (!nativeBinding || process.env.NAPI_RS_FORCE_WASI) {
+  try {
+    nativeBinding = require('./rspack.wasi.cjs')
+  } catch (err) {
+    if (process.env.NAPI_RS_FORCE_WASI) {
+      console.error(err)
+    }
+  }
+  if (!nativeBinding) {
+    try {
+      nativeBinding = require('@rspack/binding-wasm32-wasi')
+    } catch (err) {
+      if (process.env.NAPI_RS_FORCE_WASI) {
+        console.error(err)
+      }
+    }
+  }
+}
+
 if (!nativeBinding) {
   if (loadError) {
     throw loadError
