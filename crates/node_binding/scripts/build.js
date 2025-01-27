@@ -10,6 +10,7 @@ let release = process.argv.includes("--release");
 // Slower release for production with `fat` LTO
 let releaseProd = process.argv.includes("--release-prod");
 let releaseDebug = process.argv.includes("--release-debug");
+let releaseWasi = process.argv.includes("--release-wasi");
 let watch = process.argv.includes("--watch");
 
 build().then((value) => {
@@ -43,6 +44,9 @@ async function build() {
 		}
 		if (releaseDebug) {
 			args.push('--profile release-debug');
+		}
+		if (releaseWasi) {
+			args.push('--profile release-wasi');
 		}
 		if (watch) {
 			args.push("--watch");

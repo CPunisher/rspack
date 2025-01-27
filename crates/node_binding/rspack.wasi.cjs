@@ -82,8 +82,6 @@ const { instance: __napiInstance, module: __wasiModule, napiModule: __napiModule
 })
 
 function __napi_rs_initialize_modules(__napiInstance) {
-  __napiInstance.exports['__napi_register__ThreadsafeNodeFS_struct_0']?.()
-  __napiInstance.exports['__napi_register__NodeFsStats_struct_1']?.()
   __napiInstance.exports['__napi_register__JsAssetInfoRelated_struct_0']?.()
   __napiInstance.exports['__napi_register__JsAssetInfo_struct_1']?.()
   __napiInstance.exports['__napi_register__JsAsset_struct_2']?.()
@@ -319,6 +317,8 @@ function __napi_rs_initialize_modules(__napiInstance) {
   __napiInstance.exports['__napi_register__JsStatsCompilation_struct_412']?.()
   __napiInstance.exports['__napi_register__JsStats_struct_413']?.()
   __napiInstance.exports['__napi_register__JsStats_impl_418']?.()
+  __napiInstance.exports['__napi_register__ThreadsafeNodeFS_struct_0']?.()
+  __napiInstance.exports['__napi_register__NodeFsStats_struct_1']?.()
   __napiInstance.exports['__napi_register__JsDiagnosticLocation_struct_0']?.()
   __napiInstance.exports['__napi_register__JsDiagnostic_struct_1']?.()
   __napiInstance.exports['__napi_register__format_diagnostic_2']?.()
@@ -327,10 +327,10 @@ function __napi_rs_initialize_modules(__napiInstance) {
   __napiInstance.exports['__napi_register__RegisterJsTaps_struct_5']?.()
   __napiInstance.exports['__napi_register__JsResolverFactory_struct_6']?.()
   __napiInstance.exports['__napi_register__JsResolverFactory_impl_9']?.()
-  __napiInstance.exports['__napi_register__Rspack_struct_10']?.()
+  __napiInstance.exports['__napi_register__register_global_trace_10']?.()
+  __napiInstance.exports['__napi_register__cleanup_global_trace_11']?.()
+  __napiInstance.exports['__napi_register__Rspack_struct_12']?.()
   __napiInstance.exports['__napi_register__Rspack_impl_15']?.()
-  __napiInstance.exports['__napi_register__register_global_trace_16']?.()
-  __napiInstance.exports['__napi_register__cleanup_global_trace_17']?.()
 }
 module.exports.EntryDataDto = __napiModule.exports.EntryDataDto
 module.exports.EntryDataDTO = __napiModule.exports.EntryDataDTO

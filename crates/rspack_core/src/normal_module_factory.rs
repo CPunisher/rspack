@@ -534,6 +534,20 @@ impl NormalModuleFactory {
         resolved_generator_options,
       );
     let resolved_side_effects = self.calculate_side_effects(&resolved_module_rules);
+    println!(
+      "{}",
+      self
+        .plugin_driver
+        .registered_parser_and_generator_builder
+        .len()
+    );
+    for entry in self
+      .plugin_driver
+      .registered_parser_and_generator_builder
+      .iter()
+    {
+      println!("{}", entry.key().as_str());
+    }
     let mut resolved_parser_and_generator = self
       .plugin_driver
       .registered_parser_and_generator_builder

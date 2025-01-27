@@ -8,7 +8,7 @@ use rspack_napi::threadsafe_function::ThreadsafeFunction;
 #[napi(object, object_to_js = false, js_name = "ThreadsafeNodeFS")]
 pub struct ThreadsafeNodeFS {
   #[napi(ts_type = "(name: string, content: Buffer) => Promise<void>")]
-  pub write_file: ThreadsafeFunction<(String, Buffer), Promise<()>>,
+  pub write_file: ThreadsafeFunction<(String, String), Promise<()>>,
   #[napi(ts_type = "(name: string) => Promise<void>")]
   pub remove_file: ThreadsafeFunction<String, Promise<()>>,
   #[napi(ts_type = "(name: string) => Promise<void>")]

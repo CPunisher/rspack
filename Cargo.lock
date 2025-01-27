@@ -2723,18 +2723,20 @@ dependencies = [
 [[package]]
 name = "napi"
 version = "3.0.0-alpha.24"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5de0beff58a431b3bd6568b690bcf55d72d8dd7f8e0e613a0193a8a9a8eef26b"
 dependencies = [
  "anyhow",
  "bitflags 2.6.0",
  "ctor 0.2.9",
- "napi-build",
+ "napi-build 2.1.4",
  "napi-sys",
  "serde",
  "serde_json",
  "tokio",
 ]
+
+[[package]]
+name = "napi-build"
+version = "2.1.4"
 
 [[package]]
 name = "napi-build"
@@ -2771,8 +2773,6 @@ dependencies = [
 [[package]]
 name = "napi-sys"
 version = "3.0.0-alpha.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cc061b99c514ad4b7abc99d4db1ca24b9542b7ff48b4760bd9f82b24611534d"
 dependencies = [
  "libloading",
 ]
@@ -3963,7 +3963,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "napi",
- "napi-build",
+ "napi-build 2.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "napi-derive",
  "rspack_error",
  "rspack_fs",
@@ -4167,7 +4167,7 @@ dependencies = [
  "color-backtrace",
  "cow-utils",
  "napi",
- "napi-build",
+ "napi-build 2.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "napi-derive",
  "ropey",
  "rspack_allocator",
@@ -4186,6 +4186,7 @@ dependencies = [
  "rspack_tracing",
  "rspack_util",
  "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]

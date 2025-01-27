@@ -362,6 +362,7 @@ impl Plugin for JsPlugin {
           Box::<JavaScriptParserAndGenerator>::default() as Box<dyn ParserAndGenerator>
         })
       });
+    println!("Register JsPlugin");
 
     Ok(())
   }

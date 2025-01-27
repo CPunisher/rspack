@@ -56,5 +56,10 @@ impl ApplyContext<'_> {
     self
       .registered_parser_and_generator_builder
       .insert(module_type, parser_and_generator_builder);
+    println!(
+      "{}: {}",
+      module_type.as_str(),
+      self.registered_parser_and_generator_builder.len()
+    );
   }
 }

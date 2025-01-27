@@ -1288,10 +1288,13 @@ impl Compilation {
     let logger = self.get_logger("rspack.Compilation");
 
     // https://github.com/webpack/webpack/blob/main/lib/Compilation.js#L2809
+    tracing::info!("start call seal hook");
     plugin_driver.compilation_hooks.seal.call(self).await?;
+    tracing::info!("end call seal hook");
 
     let start = logger.time("optimize dependencies");
     // https://github.com/webpack/webpack/blob/d15c73469fd71cf98734685225250148b68ddc79/lib/Compilation.js#L2812-L2814
+    tracing::info!("start call optimize_dependencies hook");
     while matches!(
       plugin_driver
         .compilation_hooks
@@ -1299,18 +1302,22 @@ impl Compilation {
         .call(self)?,
       Some(true)
     ) {}
+    tracing::info!("end call optimize_dependencies hook");
     logger.time_end(start);
 
     // ModuleGraph is frozen for now on, we have a module graph that won't change
     // so now we can start to create a chunk graph based on the module graph
 
     let start = logger.time("create chunks");
+    tracing::info!("start code splitting");
     use_code_splitting_cache(self, |compilation| async {
       build_chunk_graph(compilation)?;
       Ok(compilation)
     })
     .await?;
+    tracing::info!("end code splitting");
 
+    tracing::info!("start call optimize modules hook");
     while matches!(
       plugin_driver
         .compilation_hooks
@@ -1319,41 +1326,54 @@ impl Compilation {
         .await?,
       Some(true)
     ) {}
+    tracing::info!("end call optimize modules hook");
+    tracing::info!("start call after optimize modules hook");
     plugin_driver
       .compilation_hooks
       .after_optimize_modules
       .call(self)
       .await?;
+    tracing::info!("end call optimize modules hook");
+    tracing::info!("start call optimize chunks hook");
     while matches!(
       plugin_driver.compilation_hooks.optimize_chunks.call(self)?,
       Some(true)
     ) {}
+    tracing::info!("end call optimize chunks hook");
 
     logger.time_end(start);
 
     let start = logger.time("optimize");
+    tracing::info!("start call optimize tree hook");
     plugin_driver
       .compilation_hooks
       .optimize_tree
       .call(self)
       .await?;
+    tracing::info!("end call optimize tree hook");
 
+    tracing::info!("start call optimize chunk modules hook");
     plugin_driver
       .compilation_hooks
       .optimize_chunk_modules
       .call(self)
       .await?;
+    tracing::info!("end call optimize chunk modules hook");
     logger.time_end(start);
 
     // ChunkGraph is frozen for now on, we have a chunk graph that won't change
     // so now we can start to generate assets based on the chunk graph
 
     let start = logger.time("module ids");
+    tracing::info!("start call module ids hook");
     plugin_driver.compilation_hooks.module_ids.call(self)?;
+    tracing::info!("end call module ids hook");
     logger.time_end(start);
 
     let start = logger.time("chunk ids");
+    tracing::info!("start call chunk ids hook");
     plugin_driver.compilation_hooks.chunk_ids.call(self)?;
+    tracing::info!("end call chunk ids hook");
 
     logger.time_end(start);
 
@@ -1383,12 +1403,14 @@ impl Compilation {
       self.get_module_graph().modules().keys().copied().collect()
     };
     self.create_module_hashes(create_module_hashes_modules)?;
+    tracing::info!("end create module hashes");
 
     let start = logger.time("optimize code generation");
     plugin_driver
       .compilation_hooks
       .optimize_code_generation
       .call(self)?;
+    tracing::info!("end call optimize code generation hook");
     logger.time_end(start);
 
     let start = logger.time("code generation");
@@ -1416,6 +1438,7 @@ impl Compilation {
       self.get_module_graph().modules().keys().copied().collect()
     };
     self.code_generation(code_generation_modules)?;
+    tracing::info!("end code generation");
     logger.time_end(start);
 
     let start = logger.time("runtime requirements");
@@ -1450,6 +1473,8 @@ impl Compilation {
         plugin_driver.clone(),
       )
       .await?;
+    tracing::info!("end process modules runtime requirements");
+
     let runtime_chunks = self.get_chunk_graph_entries().collect();
     let process_runtime_requirements_chunks = if let Some(mutations) = self
       .incremental
@@ -1492,6 +1517,7 @@ impl Compilation {
         plugin_driver.clone(),
       )
       .await?;
+    tracing::info!("end process chunks runtime requirements");
     logger.time_end(start);
 
     let start = logger.time("hashing");
@@ -1525,14 +1551,17 @@ impl Compilation {
       .create_hash(create_hash_chunks, plugin_driver.clone())
       .await?;
     self.runtime_modules_code_generation()?;
+    tracing::info!("end runtime modules code generations");
     logger.time_end(start);
 
     let start = logger.time("create module assets");
     self.create_module_assets(plugin_driver.clone()).await;
+    tracing::info!("end create modules assets");
     logger.time_end(start);
 
     let start = logger.time("create chunk assets");
     self.create_chunk_assets(plugin_driver.clone()).await?;
+    tracing::info!("end create chunk assets");
     logger.time_end(start);
 
     let start = logger.time("process assets");
@@ -1541,10 +1570,12 @@ impl Compilation {
       .process_assets
       .call(self)
       .await?;
+    tracing::info!("end call process assets hook");
     logger.time_end(start);
 
     let start = logger.time("after process assets");
     self.after_process_assets(plugin_driver.clone()).await?;
+    tracing::info!("end call after process assets hook");
     logger.time_end(start);
 
     let start = logger.time("after seal");

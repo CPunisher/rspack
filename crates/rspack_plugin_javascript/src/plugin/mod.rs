@@ -374,6 +374,7 @@ impl JsPlugin {
             buf2.push("// This entry module used 'module' so it can't be inlined".into());
           }
 
+          tracing::debug!("{:?} {}", &compilation.module_ids_artifact, *module);
           let module_id = ChunkGraph::get_module_id(&compilation.module_ids_artifact, *module)
             .expect("should have module id");
           let mut module_id_expr = serde_json::to_string(module_id).expect("invalid module_id");

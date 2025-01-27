@@ -111,6 +111,7 @@ impl Compiler {
 
     let options = Arc::new(options);
     let plugin_driver = PluginDriver::new(options.clone(), plugins, resolver_factory.clone());
+    println!("buildtin: {}", buildtime_plugins.len());
     let buildtime_plugin_driver =
       PluginDriver::new(options.clone(), buildtime_plugins, resolver_factory.clone());
     let cache = new_cache(
@@ -189,9 +190,13 @@ impl Compiler {
       self.compilation.push_diagnostic(err.into());
     }
 
+    tracing::info!("start compile");
     self.compile().await?;
     self.old_cache.begin_idle();
+    tracing::info!("end compile");
+    tracing::info!("start compile_done");
     self.compile_done().await?;
+    tracing::info!("end compile_done");
     if let Err(err) = self.cache.after_compile(&self.compilation).await {
       self.compilation.push_diagnostic(err.into());
     }
@@ -206,22 +211,27 @@ impl Compiler {
     // `JsCompiler` tapped `thisCompilation` to update the `JsCompilation` on the JavaScript side.
     // Otherwise, trying to access the old native `JsCompilation` would cause undefined behavior
     // as the previous instance might get dropped.
+    tracing::info!("start call this_compilation hook");
     self
       .plugin_driver
       .compiler_hooks
       .this_compilation
       .call(&mut self.compilation, &mut compilation_params)
       .await?;
+    tracing::info!("end call this_compilation hook");
+    tracing::info!("start call compilation hook");
     self
       .plugin_driver
       .compiler_hooks
       .compilation
       .call(&mut self.compilation, &mut compilation_params)
       .await?;
+    tracing::info!("end call compilation hook");
 
     let logger = self.compilation.get_logger("rspack.Compiler");
     let make_start = logger.time("make");
     let make_hook_start = logger.time("make hook");
+    tracing::info!("start call before_make hook");
     if let Err(err) = self
       .cache
       .before_make(&mut self.compilation.make_artifact)
@@ -229,6 +239,8 @@ impl Compiler {
     {
       self.compilation.push_diagnostic(err.into());
     }
+    tracing::info!("end call before_make hook");
+    tracing::info!("start call before_make hook");
     if let Some(e) = self
       .plugin_driver
       .compiler_hooks
@@ -239,27 +251,36 @@ impl Compiler {
     {
       self.compilation.push_diagnostic(e.into());
     }
+    tracing::info!("end call before_make hook");
     logger.time_end(make_hook_start);
+    tracing::info!("start compile make");
     self.compilation.make().await?;
+    tracing::info!("end compile make");
     logger.time_end(make_start);
 
     let start = logger.time("finish make hook");
+    tracing::info!("start call finish_make hook");
     self
       .plugin_driver
       .compiler_hooks
       .finish_make
       .call(&mut self.compilation)
       .await?;
+    tracing::info!("end call finish_make hook");
     logger.time_end(start);
 
     let start = logger.time("finish compilation");
+    tracing::info!("start finish");
     self.compilation.finish(self.plugin_driver.clone()).await?;
+    tracing::info!("end finish");
     if let Err(err) = self.cache.after_make(&self.compilation.make_artifact).await {
       self.compilation.push_diagnostic(err.into());
     }
     logger.time_end(start);
     let start = logger.time("seal compilation");
+    tracing::info!("start seal");
     self.compilation.seal(self.plugin_driver.clone()).await?;
+    tracing::info!("end seal");
     logger.time_end(start);
 
     // Consume plugin driver diagnostic
@@ -357,6 +378,7 @@ impl Compiler {
     if let Some(source) = asset.get_source() {
       let (target_file, query) = filename.split_once('?').unwrap_or((filename, ""));
       let file_path = output_path.join(target_file);
+      tracing::debug!("start create_dir_all");
       self
         .output_filesystem
         .create_dir_all(
@@ -365,6 +387,7 @@ impl Compiler {
             .unwrap_or_else(|| panic!("The parent of {file_path} can't found")),
         )
         .await?;
+      tracing::debug!("end create_dir_all");
 
       let content = source.buffer();
 
@@ -376,6 +399,7 @@ impl Compiler {
             || include_hash(target_file, &asset.info.full_hash));
       }
 
+      tracing::debug!("start stat");
       let stat = match self
         .output_filesystem
         .stat(file_path.as_path().as_ref())
@@ -384,6 +408,7 @@ impl Compiler {
         Ok(stat) => Some(stat),
         Err(_) => None,
       };
+      tracing::debug!("end stat");
 
       let need_write = if !self.options.output.compare_before_emit {
         // write when compare_before_emit is false
@@ -395,6 +420,7 @@ impl Compiler {
         // do not write when asset is immutable and the file exists
         false
       } else if (content.len() as u64) == stat.as_ref().unwrap_or_else(|| unreachable!()).size {
+        tracing::debug!("start read file");
         match self
           .output_filesystem
           .read_file(file_path.as_path().as_ref())
@@ -411,7 +437,9 @@ impl Compiler {
       };
 
       if need_write {
+        tracing::debug!("start write");
         self.output_filesystem.write(&file_path, &content).await?;
+        tracing::debug!("end write");
         self.compilation.emitted_assets.insert(filename.to_string());
       }
 

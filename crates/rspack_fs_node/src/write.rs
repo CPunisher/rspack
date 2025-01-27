@@ -63,7 +63,7 @@ impl WritableFileSystem for NodeFileSystem {
     self
       .0
       .write_file
-      .call_with_promise((file, data.into()))
+      .call_with_promise((file, String::from_utf8(data).unwrap()))
       .await
       .map_err(map_error_to_fs_error)
   }

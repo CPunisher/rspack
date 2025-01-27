@@ -8,16 +8,19 @@ where
   T: Send + 'static,
 {
   let old = mem::replace(dest, src);
-  thread::spawn(move || {
-    mem::drop(old);
-  });
+  mem::drop(old);
+  // let old = mem::replace(dest, src);
+  // thread::spawn(move || {
+  //   mem::drop(old);
+  // });
 }
 
 pub fn fast_drop<T>(src: T)
 where
   T: Send + 'static,
 {
-  thread::spawn(move || {
-    mem::drop(src);
-  });
+  mem::drop(src);
+  // thread::spawn(move || {
+  //   mem::drop(src);
+  // });
 }
