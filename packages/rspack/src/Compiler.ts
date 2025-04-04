@@ -810,10 +810,10 @@ class Compiler {
 	#getInstance(
 		callback: (error: Error | null, instance?: binding.JsCompiler) => void
 	): void {
-		const error = checkVersion();
-		if (error) {
-			return callback(error);
-		}
+		// const error = checkVersion();
+		// if (error) {
+		// 	return callback(error);
+		// }
 
 		if (this.#instance) {
 			return callback(null, this.#instance);
