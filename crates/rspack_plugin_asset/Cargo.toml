@@ -22,5 +22,8 @@ serde_json       = { workspace = true }
 tracing          = { workspace = true }
 urlencoding      = { workspace = true }
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [package.metadata.cargo-shear]
 ignored = ["tracing"]

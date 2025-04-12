@@ -27,5 +27,8 @@ thiserror          = "1.0.69"
 
 unicode-width = "0.2.0"
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [package.metadata.cargo-shear]
 ignored = ["swc_parallel"]

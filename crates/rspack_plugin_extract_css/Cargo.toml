@@ -27,5 +27,8 @@ tokio                    = { workspace = true }
 tracing                  = { workspace = true }
 ustr                     = { workspace = true }
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [package.metadata.cargo-shear]
 ignored = ["tracing", "tokio"]

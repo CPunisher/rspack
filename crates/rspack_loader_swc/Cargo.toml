@@ -45,5 +45,8 @@ url                      = "2.5.0"
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 stacker = { workspace = true }
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [build-dependencies]
 cargo_toml = { version = "0.21.0" }

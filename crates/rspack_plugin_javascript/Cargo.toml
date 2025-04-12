@@ -56,5 +56,8 @@ url = { workspace = true }
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 stacker = { workspace = true }
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [package.metadata.cargo-shear]
 ignored = ["tracing"]

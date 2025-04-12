@@ -16,3 +16,6 @@ rspack_cacheable = { workspace = true }
 rspack_core      = { workspace = true }
 rspack_error     = { workspace = true }
 rspack_util      = { workspace = true }
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }

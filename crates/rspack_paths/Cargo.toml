@@ -11,3 +11,6 @@ version     = "0.2.0"
 [dependencies]
 camino           = { workspace = true }
 rspack_cacheable = { workspace = true }
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }

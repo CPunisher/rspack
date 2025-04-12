@@ -17,6 +17,9 @@ rspack_cacheable = { workspace = true }
 rspack_error     = { workspace = true }
 swc_core         = { workspace = true, features = ["ecma_ast"] }
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [dev-dependencies]
 swc_core = { workspace = true, features = [
   "ecma_ast",

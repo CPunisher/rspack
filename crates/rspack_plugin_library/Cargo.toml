@@ -37,5 +37,8 @@ swc_core = { workspace = true, features = [
   "ecma_quote",
 ] }
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [package.metadata.cargo-shear]
 ignored = ["tracing"]

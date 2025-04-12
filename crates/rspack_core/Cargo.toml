@@ -72,6 +72,9 @@ tokio = { workspace = true, features = ["rt", "macros"] }
 tracing = { workspace = true }
 ustr = { workspace = true }
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [dev-dependencies]
 pretty_assertions = { version = "1.4.1" }
 

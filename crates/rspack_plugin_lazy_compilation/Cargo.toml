@@ -24,5 +24,8 @@ rspack_plugin_javascript = { workspace = true }
 rspack_regex             = { workspace = true }
 rspack_util              = { workspace = true }
 
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
+
 [package.metadata.cargo-shear]
 ignored = ["tracing"]

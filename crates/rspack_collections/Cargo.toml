@@ -16,3 +16,6 @@ rayon            = { workspace = true }
 rspack_cacheable = { workspace = true }
 serde            = { workspace = true, features = ["derive"] }
 ustr             = { workspace = true, features = ["serde"] }
+
+[target.'cfg(target_family = "wasm")'.dependencies]
+rspack_cacheable = { workspace = true, features = ["noop"] }
