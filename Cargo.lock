@@ -4347,6 +4347,7 @@ dependencies = [
  "napi",
  "napi-build",
  "napi-derive",
+ "parking_lot",
  "ropey",
  "rspack_allocator",
  "rspack_cacheable",
