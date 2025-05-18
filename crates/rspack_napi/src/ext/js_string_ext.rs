@@ -4,7 +4,7 @@ pub trait JsStringExt {
   fn into_string(self) -> String;
 }
 
-impl JsStringExt for JsString {
+impl<'env> JsStringExt for JsString<'env> {
   fn into_string(self) -> String {
     self
       .into_utf8()

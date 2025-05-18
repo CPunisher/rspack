@@ -5,7 +5,7 @@ use std::{cell::Cell, ptr, rc::Rc};
 use napi::{
   bindgen_prelude::{check_status, Object, ToNapiValue},
   sys::{self, napi_env},
-  Env, NapiRaw, NapiValue, Result,
+  Env, JsObjectValue, JsValue, Result,
 };
 
 pub struct WeakRef {
